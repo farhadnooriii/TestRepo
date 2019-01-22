@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -39,6 +40,9 @@ public class CompanyNodeController {
      */
     @RequestMapping(value = "/companynodes/{id}/childrens",method = RequestMethod.GET)
     public ResponseEntity<List<CompanyNode>> getAllChildrenOfGivenNode(@PathVariable("id") long id) throws Exception {
+
+        if(id==0)
+            return ResponseEntity.ok(new ArrayList<>());
         try {
             return ResponseEntity.ok(companyNodeService.getAllChildren(new CompanyNode(id)));
         } catch (Exception e) {
