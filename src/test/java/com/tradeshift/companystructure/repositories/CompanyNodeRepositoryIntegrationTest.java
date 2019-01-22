@@ -15,11 +15,11 @@ import java.util.Collection;
 import java.util.List;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class CompanyNodeRepositoryTest {
+public class CompanyNodeRepositoryIntegrationTest {
 
     private CompanyNodeRepository companyNodeRepository;
 
-    public CompanyNodeRepositoryTest(){
+    public CompanyNodeRepositoryIntegrationTest(){
         companyNodeRepository = new CompanyNodeRepositoryImpl();
     }
 
