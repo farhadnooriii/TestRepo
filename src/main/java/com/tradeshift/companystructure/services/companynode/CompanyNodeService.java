@@ -9,5 +9,5 @@ import java.util.List;
 public interface CompanyNodeService {
 
     List<CompanyNode> getAllChildren(CompanyNode companyNode) throws Exception;
-    boolean updateNodeParent(CompanyNode companyNode, CompanyNode parentNode) throws Exception;
+    CompanyNode updateNodeParent(CompanyNode companyNode, CompanyNode parentNode) throws Exception;
 }

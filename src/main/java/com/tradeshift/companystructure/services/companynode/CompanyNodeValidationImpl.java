@@ -2,6 +2,7 @@ package com.tradeshift.companystructure.services.companynode;
 
 import com.tradeshift.companystructure.domain.lables.CompanyNode;
 import com.tradeshift.companystructure.repositories.companynode.CompanyNodeRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Service;
 
@@ -16,14 +17,10 @@ import org.springframework.stereotype.Service;
  * @since 2019-01-09
  */
 @Service
-@Configuration
 public class CompanyNodeValidationImpl implements CompanyNodeValidation {
 
+    @Autowired
     private CompanyNodeRepository companyNodeRepository;
-
-    public CompanyNodeValidationImpl(CompanyNodeRepository companyNodeRepository) {
-        this.companyNodeRepository = companyNodeRepository;
-    }
 
     /**
      * This method is used to check that given node
