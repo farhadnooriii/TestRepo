@@ -5,11 +5,11 @@ import com.tradeshift.companystructure.repositories.companynode.CompanyNodeRepos
 import com.tradeshift.companystructure.services.companynode.CompanyNodeService;
 import com.tradeshift.companystructure.services.companynode.CompanyNodeServiceImpl;
 import com.tradeshift.companystructure.services.companynode.CompanyNodeValidationImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.logging.Logger;
@@ -23,35 +23,27 @@ import java.util.logging.Logger;
  * @since 2019-01-11
  */
 @RestController
-@RequestMapping("/companystructure")
+@RequestMapping("/api/v1")
 public class CompanyNodeController {
 
     private static Logger logger = Logger.getLogger(CompanyNodeController.class.getName());
-    private final CompanyNodeService companyNodeService;
-
-    public CompanyNodeController() {
-        this.companyNodeService = new CompanyNodeServiceImpl(new CompanyNodeRepositoryImpl(),new CompanyNodeValidationImpl(new CompanyNodeRepositoryImpl()));
-    }
+    @Autowired
+    private CompanyNodeService companyNodeService;
 
     /**
      * This method is used to get all children of
      * given node id.
      *
-     * @param nodeId  This parameter specify node id.
-     * @return List<CompanyNode></CompanyNode> This return all children
+     * @param id  This parameter specify node id.
+     * @return ResponseEntity<List<CompanyNode>> This return all children
      */
-    @GetMapping("/getChildren")
-    public List<CompanyNode> getAllChildrenOfGivenNode(@RequestParam(value = "nodeId") Long nodeId) {
-
-        if (nodeId == null)
-            return null;
-        CompanyNode companyNode = new CompanyNode();
-        companyNode.setId(nodeId);
+    @RequestMapping(value = "/companynodes/{id}/childrens",method = RequestMethod.GET)
+    public ResponseEntity<List<CompanyNode>> getAllChildrenOfGivenNode(@PathVariable("id") long id) throws Exception {
         try {
-            return companyNodeService.getAllChildren(companyNode);
+            return ResponseEntity.ok(companyNodeService.getAllChildren(new CompanyNode(id)));
         } catch (Exception e) {
-            logger.info("There is Exception in getAllChildrenOfGivenNode: " + e.getMessage());
-            return null;
+            logger.warning(e.getMessage());
+            throw e;
         }
     }
 
@@ -59,27 +51,18 @@ public class CompanyNodeController {
      * This method is used to change parent of
      * given node id.
      *
-     * @param nodeId      This parameter specify node id.
-     * @param parentNodeId    This parameter specify new parent node id.
-     * @return String This return string of message just for test.
+     * @param id      This parameter specify node id.
+     * @param parentId    This parameter specify new parent node id.
+     * @return ResponseEntity<CompanyNode> This return given node along updated parent.
      */
-    @GetMapping("/changeParent")
-    public String changeParentNodeOfGivenNode(@RequestParam(value = "nodeId") Long nodeId, @RequestParam(value = "parentNodeId") Long parentNodeId) {
-
-        String msgSuccess = "Successfully Done";
-        String msgFail = "There Is Problem And Not Done";
-        if (nodeId == null || parentNodeId == null)
-            return msgFail;
-        CompanyNode companyNode = new CompanyNode();
-        companyNode.setId(nodeId);
-        CompanyNode parentNode = new CompanyNode();
-        parentNode.setId(parentNodeId);
+    @RequestMapping(value = "/companynodes/{id}/parent/{parentId}",method = RequestMethod.PUT)
+    public ResponseEntity<CompanyNode> changeParentNodeOfGivenNode(@PathVariable("id") long id,@PathVariable("parentId") long parentId) throws Exception {
         try {
-            companyNodeService.updateNodeParent(companyNode, parentNode);
-            return msgSuccess;
+           CompanyNode companyNode = companyNodeService.updateNodeParent(new CompanyNode(id), new CompanyNode(parentId));
+           return ResponseEntity.ok(companyNode);
         } catch (Exception e) {
-            logger.info("There is Exception in changeParentNodeOfGivenNode: " + e.getMessage());
-            return msgFail;
+            logger.warning(e.getMessage());
+            throw e;
         }
     }
 
@@ -95,4 +78,12 @@ public class CompanyNodeController {
         logger.log(java.util.logging.Level.INFO, msg);
         return msg;
     }
+
+    @ResponseBody
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    String exceptionHandler(Exception e) {
+        return e.getMessage();
+    }
+
 }
