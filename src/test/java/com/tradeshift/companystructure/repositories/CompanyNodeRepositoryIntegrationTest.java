@@ -24,7 +24,7 @@ public class CompanyNodeRepositoryIntegrationTest {
     }
 
     @BeforeClass
-    public static void run() {
+    public static void init() {
        CompanyNodeSeeder.setupWithInitialData();
     }
 
