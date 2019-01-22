@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,19 +36,18 @@ public class CompanyNodeController {
      * This method is used to get all children of
      * given node id.
      *
-     * @param id  This parameter specify node id.
+     * @param id This parameter specify node id.
      * @return ResponseEntity<List<CompanyNode>> This return all children
      */
-    @RequestMapping(value = "/companynodes/{id}/childrens",method = RequestMethod.GET)
+    @RequestMapping(value = "/companynodes/{id}/childrens", method = RequestMethod.GET)
     public ResponseEntity<List<CompanyNode>> getAllChildrenOfGivenNode(@PathVariable("id") long id) throws Exception {
 
-        if(id==0)
-            return ResponseEntity.ok(new ArrayList<>());
         try {
-            return ResponseEntity.ok(companyNodeService.getAllChildren(new CompanyNode(id)));
-        } catch (Exception e) {
-            logger.warning(e.getMessage());
-            throw e;
+            return ResponseEntity.ok(companyNodeService.getAllChildren(null));
+        } catch (Exception ex) {
+            logger.warning(ex.getMessage());
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "Provide correct Company Node", ex);
         }
     }
 
@@ -55,15 +55,17 @@ public class CompanyNodeController {
      * This method is used to change parent of
      * given node id.
      *
-     * @param id      This parameter specify node id.
-     * @param parentId    This parameter specify new parent node id.
+     * @param id       This parameter specify node id.
+     * @param parentId This parameter specify new parent node id.
      * @return ResponseEntity<CompanyNode> This return given node along updated parent.
      */
-    @RequestMapping(value = "/companynodes/{id}/parent/{parentId}",method = RequestMethod.PUT)
-    public ResponseEntity<CompanyNode> changeParentNodeOfGivenNode(@PathVariable("id") long id,@PathVariable("parentId") long parentId) throws Exception {
+    @RequestMapping(value = "/companynodes/{id}/parent/{parentId}", method = RequestMethod.PUT)
+    public ResponseEntity<CompanyNode> changeParentNodeOfGivenNode(
+            @PathVariable("id") long id,
+            @PathVariable("parentId") long parentId) throws Exception {
         try {
-           CompanyNode companyNode = companyNodeService.updateNodeParent(new CompanyNode(id), new CompanyNode(parentId));
-           return ResponseEntity.ok(companyNode);
+            CompanyNode companyNode = companyNodeService.updateNodeParent(new CompanyNode(id), new CompanyNode(parentId));
+            return ResponseEntity.ok(companyNode);
         } catch (Exception e) {
             logger.warning(e.getMessage());
             throw e;
@@ -82,12 +84,4 @@ public class CompanyNodeController {
         logger.log(java.util.logging.Level.INFO, msg);
         return msg;
     }
-
-    @ResponseBody
-    @ExceptionHandler(Exception.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    String exceptionHandler(Exception e) {
-        return e.getMessage();
-    }
-
 }
