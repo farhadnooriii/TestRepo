@@ -2,12 +2,10 @@ package com.tradeshift.companystructure.repositories.companynode;
 
 import com.tradeshift.companystructure.domain.lables.CompanyNode;
 import com.tradeshift.companystructure.domain.lables.RootNode;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 @Repository
-@Configuration
 public interface CompanyNodeRepository {
 
     //region Query
@@ -29,7 +27,7 @@ public interface CompanyNodeRepository {
 
     //region CRUD
 
-    void updateNodeParent(Long nodeId,Long newParentId);
+    CompanyNode updateNodeParent(Long nodeId,Long newParentId);
     void insert(CompanyNode companyNode,int depth);
     void deleteAll();
 

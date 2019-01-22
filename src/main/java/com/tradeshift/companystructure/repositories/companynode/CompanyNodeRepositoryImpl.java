@@ -11,6 +11,7 @@ import org.neo4j.ogm.cypher.Filters;
 import org.neo4j.ogm.model.Result;
 import org.neo4j.ogm.session.Session;
 import org.neo4j.ogm.session.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,22 +28,23 @@ import java.util.*;
  * @since 2019-01-08
  */
 @Repository
-@org.springframework.context.annotation.Configuration
 public class CompanyNodeRepositoryImpl implements CompanyNodeRepository {
 
     //region Global
 
-    private final Session session;
+    Configuration configuration = new Configuration.Builder().uri(NeoConfig.SERVER_URI).connectionPoolSize(1500).credentials(NeoConfig.SERVER_USERNAME, NeoConfig.SERVER_PASSWORD).build();
+    SessionFactory sessionFactory = new SessionFactory(configuration, NeoConfig.DOMAIN_PACKAGE);
+    Session session = sessionFactory.openSession();
 
     //endregion
 
     //region Constructor
-
-    public CompanyNodeRepositoryImpl() {
-        Configuration configuration = new Configuration.Builder().uri(NeoConfig.SERVER_URI).connectionPoolSize(1500).credentials(NeoConfig.SERVER_USERNAME, NeoConfig.SERVER_PASSWORD).build();
-        SessionFactory sessionFactory = new SessionFactory(configuration, NeoConfig.DOMAIN_PACKAGE);
-        session = sessionFactory.openSession();
-    }
+//    @Autowired
+//    public CompanyNodeRepositoryImpl() {
+//        Configuration configuration = new Configuration.Builder().uri(NeoConfig.SERVER_URI).connectionPoolSize(1500).credentials(NeoConfig.SERVER_USERNAME, NeoConfig.SERVER_PASSWORD).build();
+//        SessionFactory sessionFactory = new SessionFactory(configuration, NeoConfig.DOMAIN_PACKAGE);
+//        session = sessionFactory.openSession();
+//    }
 
     //endregion
 
@@ -294,19 +296,6 @@ public class CompanyNodeRepositoryImpl implements CompanyNodeRepository {
             throw new Exception("root node is not defined");
         }
         return rootNode;
-
-//        Iterable<RootNode> rootNodes = this.session.loadAll(RootNode.class);
-//        RootNode rootNode;
-//        if (rootNodes != null && !((Collection<RootNode>) rootNodes).isEmpty()) {
-//            List<RootNode> rootNodeList = Lists.newArrayList(rootNodes);
-//            if (rootNodeList.size() == 1)
-//                rootNode = rootNodeList.get(0);
-//            else
-//                throw new Exception("more than one root node is defined");
-//        } else {
-//            throw new Exception("root node is not defined");
-//        }
-//        return rootNode;
     }
 
     //endregion
@@ -319,18 +308,32 @@ public class CompanyNodeRepositoryImpl implements CompanyNodeRepository {
      *
      * @param nodeId      This parameter specify node id.
      * @param newParentId This parameter specify new parent node id.
+     *
+     * @return CompanyNode , This return company node along updated parent
      */
     @Transactional
     @Override
-    public void updateNodeParent(Long nodeId, Long newParentId) {
-
+    public CompanyNode updateNodeParent(Long nodeId, Long newParentId) {
+        Configuration configuration = new Configuration.Builder().uri(NeoConfig.SERVER_URI).connectionPoolSize(1500).credentials(NeoConfig.SERVER_USERNAME, NeoConfig.SERVER_PASSWORD).build();
+        SessionFactory sessionFactory = new SessionFactory(configuration, NeoConfig.DOMAIN_PACKAGE);
+        session = sessionFactory.openSession();
         CompanyNode parentNode = this.findParentNodeOfGivenNode(nodeId);
         Map<String, Object> params = new HashMap<>(3);
         params.put("parentId", parentNode.getId());
         params.put("nodeId", nodeId);
         params.put("newParentId", newParentId);
-        String query = "MATCH (parent:CompanyNode)-[r:rel]->(companyNode:CompanyNode) WHERE ID(parent) = $parentId AND ID(companyNode) = $nodeId WITH companyNode,r DELETE r WITH companyNode MATCH (p:CompanyNode) WHERE ID(p) = $newParentId MERGE (p)-[:rel]->(companyNode)";
-        this.session.query(query, params);
+        String query = "MATCH (parent:CompanyNode)-[r:rel]->(companyNode:CompanyNode) WHERE ID(parent) = $parentId AND ID(companyNode) = $nodeId WITH companyNode,r DELETE r WITH companyNode MATCH (newParentNode:CompanyNode) WHERE ID(newParentNode) = $newParentId MERGE (newParentNode)-[:rel]->(companyNode) RETURN companyNode,newParentNode";
+        Result result = this.session.query(query, params);
+        CompanyNode companyNode = null;
+        for (Map<String, Object> row : result) {
+            if (row.get("companyNode") != null) {
+                companyNode = (CompanyNode) row.get("companyNode");
+            }
+            if (row.get("newParentNode") != null) {
+                companyNode.setParentNode((CompanyNode) row.get("newParentNode"));
+            }
+        }
+        return companyNode;
     }
 
     /**
