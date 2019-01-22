@@ -51,7 +51,7 @@ public class CompanyNodeControllerIntegrationTest {
     public void getChildren_checkReturnedJson_isNotEmpty() throws Exception {
         Long nodeId = 10L;
         given(companyNodeControllerMock.getAllChildrenOfGivenNode(nodeId)).willReturn(ResponseEntity.ok(children));
-        this.mockMvc.perform(get("/companystructure/getChildren?nodeId=" + nodeId.toString()))
+        this.mockMvc.perform(get("/api/v1/companynodes/".concat(nodeId.toString()).concat("/childrens")))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$", is(not(Matchers.empty()))));
@@ -61,7 +61,7 @@ public class CompanyNodeControllerIntegrationTest {
     public void getChildren_checkReturnedJsonSize_beEquals() throws Exception {
         Long nodeId = 10L;
         given(companyNodeControllerMock.getAllChildrenOfGivenNode(nodeId)).willReturn(ResponseEntity.ok(children));
-        this.mockMvc.perform(get("/companystructure/getChildren?nodeId=" + nodeId.toString()))
+        this.mockMvc.perform(get("/api/v1/companynodes/".concat(nodeId.toString()).concat("/childrens")))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$", hasSize(children.size())));
@@ -71,7 +71,7 @@ public class CompanyNodeControllerIntegrationTest {
     public void getChildren_checkReturnedJson_allChildren_isExist() throws Exception {
         Long nodeId = 10L;
         given(companyNodeControllerMock.getAllChildrenOfGivenNode(nodeId)).willReturn(ResponseEntity.ok(children));
-        this.mockMvc.perform(get("/companystructure/getChildren?nodeId=" + nodeId.toString()))
+        this.mockMvc.perform(get("/api/v1/companynodes/".concat(nodeId.toString()).concat("/childrens")))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$[0].id", is(1)))
@@ -85,9 +85,9 @@ public class CompanyNodeControllerIntegrationTest {
     }
 
     @Test
-    public void getChildren_givenNodeIsNull_childrenListIsEmpty() throws Exception {
+    public void getChildren_givenNodeIsZero_childrenListIsEmpty() throws Exception {
 
-        this.mockMvc.perform(get("/companystructure/getChildren?nodeId="))
+        this.mockMvc.perform(get("/api/v1/companynodes/".concat("0").concat("/childrens")))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").doesNotExist());
     }
@@ -95,7 +95,7 @@ public class CompanyNodeControllerIntegrationTest {
     @Test
     public void isAlive_checkServerUp_withSuccessMessage() throws Exception {
         given(companyNodeControllerMock.isAlive()).willReturn("container is running");
-        this.mockMvc.perform(get("/companystructure/isAlive"))
+        this.mockMvc.perform(get("/api/v1/companystructure/isAlive"))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
