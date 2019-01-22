@@ -14,7 +14,6 @@ import org.junit.runners.MethodSorters;
 import java.util.Collection;
 import java.util.List;
 
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class CompanyNodeRepositoryIntegrationTest {
 
     private CompanyNodeRepository companyNodeRepository;
