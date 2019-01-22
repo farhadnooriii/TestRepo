@@ -37,8 +37,8 @@ public class CompanyNodeServiceImpl implements CompanyNodeService {
      */
     @Override
     public List<CompanyNode> getAllChildren(CompanyNode companyNode) throws Exception {
-        if (companyNode == null || companyNode.getId()==null)
-            return new ArrayList<>();
+//        if (companyNode == null || companyNode.getId()==null)
+//            return new ArrayList<>();
         return companyNodeRepository.findAllChildrenOfGivenNodeWithHeightAndRoot(companyNode.getId());
     }
 
