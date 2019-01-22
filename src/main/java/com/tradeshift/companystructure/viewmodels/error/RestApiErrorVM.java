@@ -28,19 +28,59 @@ public class RestApiErrorVM {
         timestamp = LocalDateTime.now();
     }
 
-    RestApiErrorVM(HttpStatus status) {
+    public HttpStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(HttpStatus status) {
+        this.status = status;
+    }
+
+    public LocalDateTime getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(LocalDateTime timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public String getDebugMessage() {
+        return debugMessage;
+    }
+
+    public void setDebugMessage(String debugMessage) {
+        this.debugMessage = debugMessage;
+    }
+
+    public List<RestApiSubErrorVM> getRestApiSubErrorVMS() {
+        return restApiSubErrorVMS;
+    }
+
+    public void setRestApiSubErrorVMS(List<RestApiSubErrorVM> restApiSubErrorVMS) {
+        this.restApiSubErrorVMS = restApiSubErrorVMS;
+    }
+
+    public RestApiErrorVM(HttpStatus status) {
         this();
         this.status = status;
     }
 
-    RestApiErrorVM(HttpStatus status, Throwable ex) {
+    public RestApiErrorVM(HttpStatus status, Throwable ex) {
         this();
         this.status = status;
         this.message = "Unexpected error";
         this.debugMessage = ex.getLocalizedMessage();
     }
 
-    RestApiErrorVM(HttpStatus status, String message, Throwable ex) {
+    public RestApiErrorVM(HttpStatus status, String message, Throwable ex) {
         this();
         this.status = status;
         this.message = message;
