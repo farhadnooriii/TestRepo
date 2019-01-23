@@ -33,7 +33,7 @@ public class CompanyNodeController {
      * @param id This parameter specify node id.
      * @return ResponseEntity<List   <   CompanyNode>> This return all children
      */
-    @RequestMapping(value = CompanyNodePathMap.GET_ALL_CHILDREN_OF_GIVEN_NODE, method = RequestMethod.GET)
+    @RequestMapping(value = CompanyNodePathMap.COMPANYNODES_ID_CHILDREN, method = RequestMethod.GET)
     public ResponseEntity<List<CompanyNode>> getAllChildrenOfGivenNode(@PathVariable("id") long id) throws Exception {
 
         try {
@@ -52,7 +52,7 @@ public class CompanyNodeController {
      * @param parentId This parameter specify new parent node id.
      * @return ResponseEntity<CompanyNode> This return given node along updated parent.
      */
-    @RequestMapping(value = CompanyNodePathMap.CHANGE_PARENT_NODE_OF_GIVEN_NODE, method = RequestMethod.PUT)
+    @RequestMapping(value = CompanyNodePathMap.COMPANYNODES_ID_PARENT_PARENTID, method = RequestMethod.PUT)
     public ResponseEntity<CompanyNode> changeParentNodeOfGivenNode(
             @PathVariable("id") long id,
             @PathVariable("parentId") long parentId) throws Exception {
@@ -64,6 +64,7 @@ public class CompanyNodeController {
             throw e;
         }
     }
+
 
     /**
      * This method is used to test container is alive or not.
