@@ -37,8 +37,8 @@ public class CompanyNodeServiceImpl implements CompanyNodeService {
      */
     @Override
     public List<CompanyNode> getAllChildren(CompanyNode companyNode) throws Exception {
-//        if (companyNode == null || companyNode.getId()==null)
-//            return new ArrayList<>();
+        this.companyNodeValidation.checkNodeIsNotNull(companyNode);
+        this.companyNodeValidation.checkNodeIsExist(companyNode);
         return companyNodeRepository.findAllChildrenOfGivenNodeWithHeightAndRoot(companyNode.getId());
     }
 
@@ -51,11 +51,11 @@ public class CompanyNodeServiceImpl implements CompanyNodeService {
      */
     @Override
     public CompanyNode updateNodeParent(CompanyNode companyNode, CompanyNode parentNode) throws Exception {
-        if (companyNode == null || companyNode.getId() == null || parentNode == null || parentNode.getId() == null)
-            return null;
-        companyNodeValidation.checkNodeIsExist(companyNode);
-        companyNodeValidation.checkNodeIsExist(parentNode);
-        companyNodeValidation.checkNodeIsNotRootNode(companyNode);
+        this.companyNodeValidation.checkNodeIsNotNull(companyNode);
+        this.companyNodeValidation.checkNodeIsNotNull(parentNode);
+        this.companyNodeValidation.checkNodeIsExist(companyNode);
+        this.companyNodeValidation.checkNodeIsExist(parentNode);
+        this.companyNodeValidation.checkNodeIsNotRootNode(companyNode);
         return companyNodeRepository.updateNodeParent(companyNode.getId(), parentNode.getId());
     }
 
