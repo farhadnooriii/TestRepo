@@ -1,18 +1,12 @@
 package com.tradeshift.companystructure.controllers;
 
+import com.tradeshift.companystructure.constants.CompanyNodePathMap;
 import com.tradeshift.companystructure.domain.lables.CompanyNode;
-import com.tradeshift.companystructure.repositories.companynode.CompanyNodeRepositoryImpl;
 import com.tradeshift.companystructure.services.companynode.CompanyNodeService;
-import com.tradeshift.companystructure.services.companynode.CompanyNodeServiceImpl;
-import com.tradeshift.companystructure.services.companynode.CompanyNodeValidationImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -25,7 +19,7 @@ import java.util.logging.Logger;
  * @since 2019-01-11
  */
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping(CompanyNodePathMap.API_V1)
 public class CompanyNodeController {
 
     private static Logger logger = Logger.getLogger(CompanyNodeController.class.getName());
@@ -37,17 +31,16 @@ public class CompanyNodeController {
      * given node id.
      *
      * @param id This parameter specify node id.
-     * @return ResponseEntity<List<CompanyNode>> This return all children
+     * @return ResponseEntity<List   <   CompanyNode>> This return all children
      */
-    @RequestMapping(value = "/companynodes/{id}/childrens", method = RequestMethod.GET)
+    @RequestMapping(value = CompanyNodePathMap.GET_ALL_CHILDREN_OF_GIVEN_NODE, method = RequestMethod.GET)
     public ResponseEntity<List<CompanyNode>> getAllChildrenOfGivenNode(@PathVariable("id") long id) throws Exception {
 
         try {
-            return ResponseEntity.ok(companyNodeService.getAllChildren(null));
+            return ResponseEntity.ok(companyNodeService.getAllChildren(new CompanyNode(id)));
         } catch (Exception ex) {
             logger.warning(ex.getMessage());
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, "Provide correct Company Node", ex);
+            throw ex;
         }
     }
 
@@ -59,7 +52,7 @@ public class CompanyNodeController {
      * @param parentId This parameter specify new parent node id.
      * @return ResponseEntity<CompanyNode> This return given node along updated parent.
      */
-    @RequestMapping(value = "/companynodes/{id}/parent/{parentId}", method = RequestMethod.PUT)
+    @RequestMapping(value = CompanyNodePathMap.CHANGE_PARENT_NODE_OF_GIVEN_NODE, method = RequestMethod.PUT)
     public ResponseEntity<CompanyNode> changeParentNodeOfGivenNode(
             @PathVariable("id") long id,
             @PathVariable("parentId") long parentId) throws Exception {
