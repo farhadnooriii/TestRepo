@@ -1,6 +1,6 @@
 package com.tradeshift.companystructure.controllers;
 
-import com.tradeshift.companystructure.constants.RestApiErrorRestPathMap;
+import com.tradeshift.companystructure.constants.RestApiErrorPathMap;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.stereotype.Controller;
@@ -13,7 +13,7 @@ public class RestApiErrorController implements ErrorController {
 
     private static Logger logger = Logger.getLogger(RestApiErrorController.class.getName());
 
-    @RequestMapping(RestApiErrorRestPathMap.ERROR)
+    @RequestMapping(RestApiErrorPathMap.ERROR)
     public String handleError() {
         logger.warning("Resource not found");
         throw new ResourceNotFoundException("Resource not found");
@@ -21,6 +21,6 @@ public class RestApiErrorController implements ErrorController {
 
     @Override
     public String getErrorPath() {
-        return RestApiErrorRestPathMap.ERROR;
+        return RestApiErrorPathMap.ERROR;
     }
 }
