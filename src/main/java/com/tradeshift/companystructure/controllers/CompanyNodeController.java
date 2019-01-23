@@ -3,12 +3,17 @@ package com.tradeshift.companystructure.controllers;
 import com.tradeshift.companystructure.constants.CompanyNodePathMap;
 import com.tradeshift.companystructure.domain.lables.CompanyNode;
 import com.tradeshift.companystructure.services.companynode.CompanyNodeService;
+import com.tradeshift.companystructure.viewmodels.companynode.CompanyNodeVM;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.Resources;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 /**
  * <h1> CompanyNodeController </h1>
@@ -19,7 +24,7 @@ import java.util.logging.Logger;
  * @since 2019-01-11
  */
 @RestController
-@RequestMapping(CompanyNodePathMap.API_V1)
+@RequestMapping(value = CompanyNodePathMap.API_V1, produces = "application/hal+json")
 public class CompanyNodeController {
 
     private static Logger logger = Logger.getLogger(CompanyNodeController.class.getName());
@@ -31,7 +36,7 @@ public class CompanyNodeController {
      * given node id.
      *
      * @param id This parameter specify node id.
-     * @return ResponseEntity<List   <   CompanyNode>> This return all children
+     * @return ResponseEntity<List<CompanyNode>> This return all children
      */
     @RequestMapping(value = CompanyNodePathMap.COMPANYNODES_ID_CHILDREN, method = RequestMethod.GET)
     public ResponseEntity<List<CompanyNode>> getAllChildrenOfGivenNode(@PathVariable("id") long id) throws Exception {
@@ -42,6 +47,26 @@ public class CompanyNodeController {
             logger.warning(ex.getMessage());
             throw ex;
         }
+    }
+
+    /**
+     * This method is used to get all children of
+     * given node id.
+     *
+     * @param id This parameter specify node id.
+     * @return ResponseEntity<Resources<CompanyNodeVM>> This return all children through hateoas template
+     */
+    @RequestMapping(value = CompanyNodePathMap.RES_COMPANYNODES_ID_CHILDREN, method = RequestMethod.GET)
+    public ResponseEntity<Resources<CompanyNodeVM>> getAllChildrenOfGivenNodeInRes(@PathVariable("id") long id) throws Exception {
+
+        final List<CompanyNodeVM> collection = companyNodeService.getAllChildren(new CompanyNode(id))
+                .stream()
+                .map(CompanyNodeVM::new)
+                .collect(Collectors.toList());
+        final Resources<CompanyNodeVM> resources = new Resources<>(collection);
+        final String uriString = ServletUriComponentsBuilder.fromCurrentRequest().build().toUriString();
+        resources.add(new Link(uriString, CompanyNodePathMap.SELF));
+        return ResponseEntity.ok(resources);
     }
 
     /**
