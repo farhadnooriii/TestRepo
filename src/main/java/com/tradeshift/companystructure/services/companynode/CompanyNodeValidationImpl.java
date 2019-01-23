@@ -62,7 +62,7 @@ public class CompanyNodeValidationImpl implements CompanyNodeValidation {
      * @param companyNode This parameter specify given company node.
      */
     @Override
-    public void checkNodeIsNotNull(CompanyNode companyNode) {
+    public void checkInputNodeIsNotNull(CompanyNode companyNode) {
         if (companyNode == null || companyNode.getId() == null)
            throw new NullPointerException("company node or company node id is null");
 

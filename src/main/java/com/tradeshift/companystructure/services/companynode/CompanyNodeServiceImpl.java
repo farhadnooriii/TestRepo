@@ -3,10 +3,8 @@ package com.tradeshift.companystructure.services.companynode;
 import com.tradeshift.companystructure.domain.lables.CompanyNode;
 import com.tradeshift.companystructure.repositories.companynode.CompanyNodeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -37,7 +35,7 @@ public class CompanyNodeServiceImpl implements CompanyNodeService {
      */
     @Override
     public List<CompanyNode> getAllChildren(CompanyNode companyNode) throws Exception {
-        this.companyNodeValidation.checkNodeIsNotNull(companyNode);
+        this.companyNodeValidation.checkInputNodeIsNotNull(companyNode);
         this.companyNodeValidation.checkNodeIsExist(companyNode);
         return companyNodeRepository.findAllChildrenOfGivenNodeWithHeightAndRoot(companyNode.getId());
     }
@@ -51,8 +49,8 @@ public class CompanyNodeServiceImpl implements CompanyNodeService {
      */
     @Override
     public CompanyNode updateNodeParent(CompanyNode companyNode, CompanyNode parentNode) throws Exception {
-        this.companyNodeValidation.checkNodeIsNotNull(companyNode);
-        this.companyNodeValidation.checkNodeIsNotNull(parentNode);
+        this.companyNodeValidation.checkInputNodeIsNotNull(companyNode);
+        this.companyNodeValidation.checkInputNodeIsNotNull(parentNode);
         this.companyNodeValidation.checkNodeIsExist(companyNode);
         this.companyNodeValidation.checkNodeIsExist(parentNode);
         this.companyNodeValidation.checkNodeIsNotRootNode(companyNode);
