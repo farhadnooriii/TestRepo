@@ -108,7 +108,7 @@ For handling http request to return children of given node and change parent, I 
 
 CompanyNodeController Methods:
 
-1.        getAllChildrenOfGivenNode: get node id from parameter and return List<CompanyNode>.
+1.        getAllChildrenOfGivenNode: get node id from parameter and return ResponseEntity<List<CompanyNode>>.
 
 2.        changeParentNodeOfGivenNode: get node id and new parent id from parameter and change it.
 
@@ -122,11 +122,11 @@ changeParentNodeOfGivenNode done within a Transaction. it means update operation
 
 HTTP API Endpoints:
 
-1.     http://localhost:8080/companystructure/getChildren?nodeId=’’
+1.     http://localhost:8080/api/v1/companynodes/{id}/children (GET)
 
-2.     http://localhost:8080/companystructure/changeParent?nodeId=’’&parentNodeId=’’
+2.     http://localhost:8080/api/v1/companynodes/{id/parent/{parentId}  (PUT)
 
-3.     http://localhost:8080/companystructure/isAlive
+3.     http://localhost:8080/api/v1/isAlive  (GET)
 
 these endpoints are mapped with CompanyNodeController methods.
 
