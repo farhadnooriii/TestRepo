@@ -17,9 +17,10 @@ import java.util.Set;
  */
 public class RestApiErrorVM {
 
-    private HttpStatus status;
+    private HttpStatus httpStatus;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss")
     private LocalDateTime timestamp;
+    private String exceptionClass;
     private String message;
     private String debugMessage;
     private List<RestApiSubErrorVM> restApiSubErrorVMS;
@@ -28,12 +29,39 @@ public class RestApiErrorVM {
         timestamp = LocalDateTime.now();
     }
 
-    public HttpStatus getStatus() {
-        return status;
+    public RestApiErrorVM(HttpStatus httpStatus) {
+        this();
+        this.httpStatus = httpStatus;
     }
 
-    public void setStatus(HttpStatus status) {
-        this.status = status;
+    public RestApiErrorVM(HttpStatus httpStatus, Throwable ex) {
+        this();
+        this.httpStatus = httpStatus;
+        this.message = "Unexpected error";
+        this.debugMessage = ex.getLocalizedMessage();
+    }
+
+    public RestApiErrorVM(HttpStatus httpStatus, String message, Throwable ex) {
+        this();
+        this.httpStatus = httpStatus;
+        this.message = message;
+        this.debugMessage = ex.getLocalizedMessage();
+    }
+
+    public HttpStatus getHttpStatus() {
+        return httpStatus;
+    }
+
+    public void setHttpStatus(HttpStatus httpStatus) {
+        this.httpStatus = httpStatus;
+    }
+
+    public String getExceptionClass() {
+        return exceptionClass;
+    }
+
+    public void setExceptionClass(String exceptionClass) {
+        this.exceptionClass = exceptionClass;
     }
 
     public LocalDateTime getTimestamp() {
@@ -68,25 +96,6 @@ public class RestApiErrorVM {
         this.restApiSubErrorVMS = restApiSubErrorVMS;
     }
 
-    public RestApiErrorVM(HttpStatus status) {
-        this();
-        this.status = status;
-    }
-
-    public RestApiErrorVM(HttpStatus status, Throwable ex) {
-        this();
-        this.status = status;
-        this.message = "Unexpected error";
-        this.debugMessage = ex.getLocalizedMessage();
-    }
-
-    public RestApiErrorVM(HttpStatus status, String message, Throwable ex) {
-        this();
-        this.status = status;
-        this.message = message;
-        this.debugMessage = ex.getLocalizedMessage();
-    }
-
     private void addSubError(RestApiSubErrorVM restApiSubErrorVM) {
         if (restApiSubErrorVMS == null)
             restApiSubErrorVMS = new ArrayList<>();
@@ -109,7 +118,7 @@ public class RestApiErrorVM {
                 fieldError.getDefaultMessage());
     }
 
-    void addValidationErrors(List<FieldError> fieldErrors) {
+   public void addValidationErrors(List<FieldError> fieldErrors) {
         fieldErrors.forEach(this::addValidationError);
     }
 
@@ -119,7 +128,7 @@ public class RestApiErrorVM {
                 objectError.getDefaultMessage());
     }
 
-    void addValidationError(List<ObjectError> globalErrors) {
+    public void addValidationError(List<ObjectError> globalErrors) {
         globalErrors.forEach(this::addValidationError);
     }
 
