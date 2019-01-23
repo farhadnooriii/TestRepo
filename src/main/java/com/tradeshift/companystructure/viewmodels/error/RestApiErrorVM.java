@@ -49,7 +49,7 @@ public class RestApiErrorVM {
     }
 
     public HttpStatus getHttpStatus() {
-        return httpStatus;
+        return this.httpStatus;
     }
 
     public void setHttpStatus(HttpStatus httpStatus) {
@@ -57,7 +57,7 @@ public class RestApiErrorVM {
     }
 
     public String getExceptionClass() {
-        return exceptionClass;
+        return this.exceptionClass;
     }
 
     public void setExceptionClass(String exceptionClass) {
@@ -65,7 +65,7 @@ public class RestApiErrorVM {
     }
 
     public LocalDateTime getTimestamp() {
-        return timestamp;
+        return this.timestamp;
     }
 
     public void setTimestamp(LocalDateTime timestamp) {
@@ -73,7 +73,7 @@ public class RestApiErrorVM {
     }
 
     public String getMessage() {
-        return message;
+        return this.message;
     }
 
     public void setMessage(String message) {
@@ -81,7 +81,7 @@ public class RestApiErrorVM {
     }
 
     public String getDebugMessage() {
-        return debugMessage;
+        return this.debugMessage;
     }
 
     public void setDebugMessage(String debugMessage) {
@@ -89,7 +89,7 @@ public class RestApiErrorVM {
     }
 
     public List<RestApiSubErrorVM> getRestApiSubErrorVMS() {
-        return restApiSubErrorVMS;
+        return this.restApiSubErrorVMS;
     }
 
     public void setRestApiSubErrorVMS(List<RestApiSubErrorVM> restApiSubErrorVMS) {
@@ -97,9 +97,9 @@ public class RestApiErrorVM {
     }
 
     private void addSubError(RestApiSubErrorVM restApiSubErrorVM) {
-        if (restApiSubErrorVMS == null)
-            restApiSubErrorVMS = new ArrayList<>();
-        restApiSubErrorVMS.add(restApiSubErrorVM);
+        if (this.restApiSubErrorVMS == null)
+            this.restApiSubErrorVMS = new ArrayList<>();
+        this.restApiSubErrorVMS.add(restApiSubErrorVM);
     }
 
     private void addValidationError(String object, String field, Object rejectedValue, String message) {
