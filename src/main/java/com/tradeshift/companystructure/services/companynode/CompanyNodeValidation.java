@@ -8,4 +8,5 @@ public interface CompanyNodeValidation  {
 
     void checkNodeIsNotRootNode(CompanyNode companyNode) throws Exception;
     void checkNodeIsExist(CompanyNode companyNode) throws Exception;
+    void checkNodeIsNotNull(CompanyNode companyNode);
 }

@@ -2,8 +2,8 @@ package com.tradeshift.companystructure.services.companynode;
 
 import com.tradeshift.companystructure.domain.lables.CompanyNode;
 import com.tradeshift.companystructure.repositories.companynode.CompanyNodeRepository;
+import com.tradeshift.companystructure.repositories.exceptions.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Service;
 
 /**
@@ -27,7 +27,7 @@ public class CompanyNodeValidationImpl implements CompanyNodeValidation {
      * is not root node. if given node be root node
      * exception thrown.
      *
-     * @param companyNode  This parameter specify given company node.
+     * @param companyNode This parameter specify given company node.
      */
     @Override
     public void checkNodeIsNotRootNode(CompanyNode companyNode) throws Exception {
@@ -46,16 +46,26 @@ public class CompanyNodeValidationImpl implements CompanyNodeValidation {
      * is exist in database. if given node is not exist
      * exception thrown.
      *
-     * @param companyNode  This parameter specify given company node.
+     * @param companyNode This parameter specify given company node.
      */
     @Override
     public void checkNodeIsExist(CompanyNode companyNode) throws Exception {
-
-        if (companyNode == null)
-            throw new Exception("There is problem with node");
         CompanyNode node = this.companyNodeRepository.findById(companyNode.getId(), 0);
         if (node == null)
-            throw new Exception("node is not exist");
+            throw new EntityNotFoundException(CompanyNode.class, "id", companyNode.getId().toString());
+    }
+
+    /**
+     * This method is used to check that given node
+     * is not null.
+     *
+     * @param companyNode This parameter specify given company node.
+     */
+    @Override
+    public void checkNodeIsNotNull(CompanyNode companyNode) {
+        if (companyNode == null || companyNode.getId() == null)
+           throw new NullPointerException("company node or company node id is null");
+
     }
 
 }
