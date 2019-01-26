@@ -1,3 +1,5 @@
+# About Design And Architecture
+
 According to hierarchical structure of data, the importance of data relationships, for example traverse between company nodes structure (parent - children) and performance issues to work with tons of nodes, I decide to use graph database as data storage.
 
 First, because this database is effective for handling data relationships.
@@ -6,45 +8,45 @@ Second one, graph database in its nature work with graph and tree. Exactly what 
 
 As a graph database, I choose neo4j because it is the first one in a graph market, has a big community and has great features like scalable architecture, ACID compliance and high performance in both storage and processing.
 
-A Note:
+# A Note:
 
 All this solution can be done with rdbms databases like Oracle or MySQL and … but the way rdbms databases work, Is not appropriate for handling tree base structure. Because in this structure requirements are moving and travers between rows. in other words, in rdbms, relationships between data means join and join is expensive. then If we deal with tons of data probably need many joins and its hell. Graph database store relationship along with data and accessing relationship is as immediate as accessing the data itself.
 
-Technologies Stack:
+# Technologies Stack:
 
-·         Neo4j as database
+- Neo4j as database
 
-·         SprintBoot2 as backend application
+- SprintBoot2 as backend application
 
-·         Neo4j ogm as object graph mapper
+- Neo4j ogm as object graph mapper
 
-·         Docker as software platform to create, deploy, and run applications by using containers
+- Docker as software platform to create, deploy, and run applications by using containers
 
-Design Model and Domain Entities:
+# Design Model and Domain Entities:
 
-From neo perspective: (Design Model)
+### From neo perspective: (Design Model)
 
-·         we have two labels, CompanyNode and RootNode.
+- we have two labels, CompanyNode and RootNode.
 
-·         all nodes have CompanyNode label.
+- all nodes have CompanyNode label.
 
-·         only one node can have RootNode label and this business rule should check when create or update nodes.
+- only one node can have RootNode label and this business rule should check when create or update nodes.
 
-·         only root node has two labels, CompanyNode and RootNode label.
+- only root node has two labels, CompanyNode and RootNode label.
 
-·         Each node has id (generate by database) and Name property, with one relationship of “ rel ” type to another one.  (:CompanyNode:RootNode) - [ :rel ] -> ( :CompanyNode)
+- Each node has id (generate by database) and Name property, with one relationship of “ rel ” type to another one.  (:CompanyNode:RootNode) - [ :rel ] -> ( :CompanyNode)
 
-·         each node has multiple relation with another nodes as children’s.
+- each node has multiple relation with another nodes as children’s.
 
-·         Each node has only one node as parent except root with no parent.
+- Each node has only one node as parent except root with no parent.
 
-From java perspective: (Design Entities)
+### From java perspective: (Design Entities)
 
-·         For handle labels and relationship between them, two classes with names of CompanyNode and RootNode are created in domain package.
+- For handle labels and relationship between them, two classes with names of CompanyNode and RootNode are created in domain package.
 
-·          each class is mapped to related label by @NodeEntity(label = ‘’)
+- each class is mapped to related label by @NodeEntity(label = ‘’)
 
-·         Because of RootNode class extends CompanyNode class, RootNode class is mapped to node in neo that has RootNode and CompanyNode labels. With business rule should check don’t insert two rootnode in to database.
+- Because of RootNode class extends CompanyNode class, RootNode class is mapped to node in neo that has RootNode and CompanyNode labels. With business rule should check don’t insert two rootnode in to database.
 
 CompanyNode entity class has two properties type:
 
