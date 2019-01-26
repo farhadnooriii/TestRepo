@@ -8,7 +8,7 @@ Second one, graph database in its nature work with graph and tree. Exactly what 
 
 As a graph database, I choose neo4j because it is the first one in a graph market, has a big community and has great features like scalable architecture, ACID compliance and high performance in both storage and processing.
 
-# A Note:
+### A Note:
 
 All this solution can be done with rdbms databases like Oracle or MySQL and … but the way rdbms databases work, Is not appropriate for handling tree base structure. Because in this structure requirements are moving and travers between rows. in other words, in rdbms, relationships between data means join and join is expensive. then If we deal with tons of data probably need many joins and its hell. Graph database store relationship along with data and accessing relationship is as immediate as accessing the data itself.
 
