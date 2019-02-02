@@ -4,7 +4,7 @@ import com.tradeshift.companystructure.domain.lables.CompanyNode;
 import com.tradeshift.companystructure.repositories.companynode.CompanyNodeRepository;
 import com.tradeshift.companystructure.repositories.exceptions.NodeNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 /**
  * <h1> CompanyNodeValidationImpl </h1>
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
  * @version 1.0
  * @since 2019-01-09
  */
-@Service
+@Component
 public class CompanyNodeValidationImpl implements CompanyNodeValidation {
 
     @Autowired
