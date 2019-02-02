@@ -22,7 +22,7 @@ public class CompanyNode  {
     @JsonIgnore
     private CompanyNode parentNode;
     @Transient
-    private RootNode root;
+    private CompanyNode root;
     @Transient
     private Long height;
 
@@ -69,11 +69,11 @@ public class CompanyNode  {
         this.parentNode = parentNode;
     }
 
-    public RootNode getRoot() {
+    public CompanyNode getRoot() {
         return root;
     }
 
-    public void setRoot(RootNode root) {
+    public void setRoot(CompanyNode root) {
         this.root = root;
     }
 
