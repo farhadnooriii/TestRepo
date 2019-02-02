@@ -36,7 +36,7 @@ public class CompanyNodeController {
      * given node id.
      *
      * @param id This parameter specify node id.
-     * @return ResponseEntity<List<CompanyNode>> This return all children
+     * @return ResponseEntity<List < CompanyNode>> This return all children
      */
     @RequestMapping(value = CompanyNodePathMap.COMPANYNODES_ID_CHILDREN, method = RequestMethod.GET)
     public ResponseEntity<List<CompanyNode>> getAllChildrenOfGivenNode(@PathVariable("id") long id) throws Exception {
@@ -54,19 +54,24 @@ public class CompanyNodeController {
      * given node id.
      *
      * @param id This parameter specify node id.
-     * @return ResponseEntity<Resources<CompanyNodeVM>> This return all children through HATEOAS template
+     * @return ResponseEntity<Resources < CompanyNodeVM>> This return all children through HATEOAS template
      */
     @RequestMapping(value = CompanyNodePathMap.RES_COMPANYNODES_ID_CHILDREN, method = RequestMethod.GET)
     public ResponseEntity<Resources<CompanyNodeVM>> getAllChildrenOfGivenNodeInRes(@PathVariable("id") long id) throws Exception {
 
-        List<CompanyNodeVM> collection = companyNodeService.getAllChildren(new CompanyNode(id))
-                .stream()
-                .map(CompanyNodeVM::new)
-                .collect(Collectors.toList());
-        Resources<CompanyNodeVM> resources = new Resources<>(collection);
-        String uriString = ServletUriComponentsBuilder.fromCurrentRequest().build().toUriString();
-        resources.add(new Link(uriString, CompanyNodePathMap.SELF));
-        return ResponseEntity.ok(resources);
+        try {
+            List<CompanyNodeVM> collection = companyNodeService.getAllChildren(new CompanyNode(id))
+                    .stream()
+                    .map(CompanyNodeVM::new)
+                    .collect(Collectors.toList());
+            Resources<CompanyNodeVM> resources = new Resources<>(collection);
+            String uriString = ServletUriComponentsBuilder.fromCurrentRequest().build().toUriString();
+            resources.add(new Link(uriString, CompanyNodePathMap.SELF));
+            return ResponseEntity.ok(resources);
+        } catch (Exception ex) {
+            logger.warning(ex.getMessage());
+            throw ex;
+        }
     }
 
     /**
