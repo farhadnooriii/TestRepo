@@ -61,7 +61,7 @@ public class CompanyNodeRepositoryImpl implements CompanyNodeRepository {
 
         Collection<CompanyNode> companyNodes = this.session.loadAll(CompanyNode.class, depth);
         if (companyNodes == null || companyNodes.isEmpty())
-            return null;
+            return new ArrayList<>();
         return Lists.newArrayList(companyNodes);
     }
 
@@ -157,9 +157,9 @@ public class CompanyNodeRepositoryImpl implements CompanyNodeRepository {
         params.put("nodeId", nodeId);
         String query = "MATCH (parentNode:CompanyNode)-[:rel]->(child:CompanyNode) WHERE ID(parentNode) = $nodeId RETURN child";
         Result result = this.session.query(query, params);
-        if (result == null)
-            return null;
         List<CompanyNode> children = new ArrayList<>();
+        if (result == null)
+            return children;
         for (Map<String, Object> row : result) {
             if (row.get("child") != null) {
                 children.add((CompanyNode) row.get("child"));
@@ -180,8 +180,8 @@ public class CompanyNodeRepositoryImpl implements CompanyNodeRepository {
 
         List<CompanyNode> companyNodeList = this.findAllChildrenOfGivenNode(nodeId);
         RootNode rootNode = this.findRootNode();
-        if (companyNodeList == null || companyNodeList.isEmpty() || rootNode == null)
-            return null;
+        if (companyNodeList.isEmpty())
+            return companyNodeList;
         Long height = this.findHeightOfNode(companyNodeList.get(0).getId(), rootNode.getId());
         for (CompanyNode companyNode : companyNodeList) {
             companyNode.setRoot(rootNode);
@@ -203,7 +203,6 @@ public class CompanyNodeRepositoryImpl implements CompanyNodeRepository {
     @Override
     public Long findHeightOfNode(Long nodeId, Long rootNodeId) {
 
-        Long height = null;
         if (nodeId.equals(rootNodeId))
             return 0L;
         Map<String, Object> params = new HashMap<>(2);
@@ -213,6 +212,7 @@ public class CompanyNodeRepositoryImpl implements CompanyNodeRepository {
         Result result = this.session.query(query, params);
         if (result == null)
             return null;
+        Long height = null;
         for (Map<String, Object> row : result) {
             if (row.get("height") != null) {
                 height = (Long) row.get("height");
@@ -234,8 +234,6 @@ public class CompanyNodeRepositoryImpl implements CompanyNodeRepository {
     public Long findHeightOfNode(Long nodeId) throws Exception {
 
         RootNode rootNode = this.findRootNode();
-        if (rootNode == null)
-            return null;
         return this.findHeightOfNode(nodeId, rootNode.getId());
     }
 
@@ -363,10 +361,11 @@ public class CompanyNodeRepositoryImpl implements CompanyNodeRepository {
     //region Private
 
     private void setRootAndHeight(CompanyNode companyNode) throws Exception {
-
-        companyNode.setRoot(this.findRootNode());
-        Long height = this.findHeightOfNode(companyNode.getId(), companyNode.getRoot().getId());
-        companyNode.setHeight(height);
+        if(companyNode!=null) {
+            companyNode.setRoot(this.findRootNode());
+            Long height = this.findHeightOfNode(companyNode.getId(), companyNode.getRoot().getId());
+            companyNode.setHeight(height);
+        }
     }
 
     //endregion
