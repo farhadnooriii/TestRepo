@@ -291,7 +291,7 @@ public class CompanyNodeRepositoryImpl implements CompanyNodeRepository {
             else
                 throw new Exception("more than one root node is defined");
         } else {
-            throw new Exception("root node is not defined");
+            throw new NodeNotFoundException(RootNode.class);
         }
         return rootNode;
     }
