@@ -49,8 +49,6 @@ public class CompanyNodeServiceImpl implements CompanyNodeService {
      */
     @Override
     public CompanyNode updateNodeParent(CompanyNode companyNode, CompanyNode parentNode) throws Exception {
-        this.companyNodeValidation.checkInputNodeIsNotNull(companyNode);
-        this.companyNodeValidation.checkInputNodeIsNotNull(parentNode);
         this.companyNodeValidation.checkNodeIsExist(companyNode);
         this.companyNodeValidation.checkNodeIsExist(parentNode);
         this.companyNodeValidation.checkNodeIsNotRootNode(companyNode);
