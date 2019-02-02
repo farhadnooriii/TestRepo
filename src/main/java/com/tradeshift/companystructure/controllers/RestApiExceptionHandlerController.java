@@ -1,6 +1,6 @@
 package com.tradeshift.companystructure.controllers;
 
-import com.tradeshift.companystructure.repositories.exceptions.CompanyNodeNotFoundException;
+import com.tradeshift.companystructure.repositories.exceptions.NodeNotFoundException;
 import com.tradeshift.companystructure.viewmodels.error.RestApiErrorVM;
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
@@ -20,7 +20,7 @@ public class RestApiExceptionHandlerController extends ResponseEntityExceptionHa
     /**
      * Convert restApiErrorVM to ResponseEntity.
      *
-     * @param restApiErrorVM the CompanyNodeNotFoundException
+     * @param restApiErrorVM the NodeNotFoundException
      * @return the ResponseEntity<RestApiErrorVM>
      */
     private ResponseEntity<Object> buildResponseEntity(RestApiErrorVM restApiErrorVM) {
@@ -30,11 +30,11 @@ public class RestApiExceptionHandlerController extends ResponseEntityExceptionHa
     /**
      * Handles When entity not found.
      *
-     * @param ex the CompanyNodeNotFoundException
+     * @param ex the NodeNotFoundException
      * @return the RestApiErrorVM object
      */
-    @ExceptionHandler(CompanyNodeNotFoundException.class)
-    protected ResponseEntity<Object> handleEntityNotFound(CompanyNodeNotFoundException ex) {
+    @ExceptionHandler(NodeNotFoundException.class)
+    protected ResponseEntity<Object> handleEntityNotFound(NodeNotFoundException ex) {
         RestApiErrorVM restApiErrorVM = new RestApiErrorVM(HttpStatus.NOT_FOUND);
         restApiErrorVM.setMessage(ex.getMessage());
         return buildResponseEntity(restApiErrorVM);

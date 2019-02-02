@@ -2,7 +2,7 @@ package com.tradeshift.companystructure.services.companynode;
 
 import com.tradeshift.companystructure.domain.lables.CompanyNode;
 import com.tradeshift.companystructure.repositories.companynode.CompanyNodeRepository;
-import com.tradeshift.companystructure.repositories.exceptions.CompanyNodeNotFoundException;
+import com.tradeshift.companystructure.repositories.exceptions.NodeNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -52,7 +52,7 @@ public class CompanyNodeValidationImpl implements CompanyNodeValidation {
     public void checkNodeIsExist(CompanyNode companyNode) throws Exception {
         CompanyNode node = this.companyNodeRepository.findById(companyNode.getId(), 0);
         if (node == null)
-            throw new CompanyNodeNotFoundException(CompanyNode.class, "id", companyNode.getId().toString());
+            throw new NodeNotFoundException(CompanyNode.class, "id", companyNode.getId().toString());
     }
 
     /**

@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.tradeshift.companystructure.domain.lables.CompanyNode;
 import com.tradeshift.companystructure.domain.lables.RootNode;
 import com.tradeshift.companystructure.repositories.config.NeoConfig;
+import com.tradeshift.companystructure.repositories.exceptions.NodeNotFoundException;
 import org.neo4j.ogm.config.Configuration;
 import org.neo4j.ogm.cypher.ComparisonOperator;
 import org.neo4j.ogm.cypher.Filter;
@@ -11,7 +12,6 @@ import org.neo4j.ogm.cypher.Filters;
 import org.neo4j.ogm.model.Result;
 import org.neo4j.ogm.session.Session;
 import org.neo4j.ogm.session.SessionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -277,7 +277,7 @@ public class CompanyNodeRepositoryImpl implements CompanyNodeRepository {
         String query = "MATCH (rootNode:RootNode) RETURN rootNode LIMIT $limit";
         Result result = this.session.query(query, params);
         if (result == null)
-            throw new Exception("root node is not defined");
+            throw new NodeNotFoundException(RootNode.class);
         List<RootNode> rootNodes = new ArrayList<>();
         for (Map<String, Object> row : result) {
             if (row.get("rootNode") != null) {

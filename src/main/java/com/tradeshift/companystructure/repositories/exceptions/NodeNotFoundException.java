@@ -9,10 +9,10 @@ import java.util.stream.IntStream;
 /**
  * Created by F.Noori on 1/22/2019.
  */
-public class CompanyNodeNotFoundException extends Exception {
+public class NodeNotFoundException extends Exception {
 
-    public CompanyNodeNotFoundException(Class clazz, String... searchParamsMap) {
-        super(CompanyNodeNotFoundException.generateMessage(clazz.getSimpleName(), toMap(String.class, String.class, searchParamsMap)));
+    public NodeNotFoundException(Class clazz, String... searchParamsMap) {
+        super(NodeNotFoundException.generateMessage(clazz.getSimpleName(), toMap(String.class, String.class, searchParamsMap)));
     }
 
     private static String generateMessage(String entity, Map<String, String> searchParams) {
