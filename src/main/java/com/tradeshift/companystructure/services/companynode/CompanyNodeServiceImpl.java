@@ -35,7 +35,6 @@ public class CompanyNodeServiceImpl implements CompanyNodeService {
      */
     @Override
     public List<CompanyNode> getAllChildren(CompanyNode companyNode) throws Exception {
-        this.companyNodeValidation.checkInputNodeIsNotNull(companyNode);
         this.companyNodeValidation.checkNodeIsExist(companyNode);
         return companyNodeRepository.findAllChildrenOfGivenNodeWithHeightAndRoot(companyNode.getId());
     }
