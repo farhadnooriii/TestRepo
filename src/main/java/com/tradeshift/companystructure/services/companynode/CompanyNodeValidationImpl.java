@@ -32,11 +32,9 @@ public class CompanyNodeValidationImpl implements CompanyNodeValidation {
     @Override
     public void checkNodeIsNotRootNode(CompanyNode companyNode) throws Exception {
 
-        if (companyNode == null)
+        if (companyNode == null || companyNode.getId() == null)
             throw new Exception("There is problem with node");
         CompanyNode rootNode = this.companyNodeRepository.findRootNode();
-        if (rootNode == null)
-            throw new Exception("There is problem,check with admin");
         if (companyNode.getId().equals(rootNode.getId()))
             throw new Exception("node can not be root node");
     }
@@ -64,7 +62,7 @@ public class CompanyNodeValidationImpl implements CompanyNodeValidation {
     @Override
     public void checkInputNodeIsNotNull(CompanyNode companyNode) {
         if (companyNode == null || companyNode.getId() == null)
-           throw new NullPointerException("company node or company node id is null");
+            throw new NullPointerException("company node or company node id is null");
 
     }
 
