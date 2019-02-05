@@ -2,14 +2,19 @@ package com.tradeshift.companystructure.controllers;
 
 import com.tradeshift.companystructure.constants.CompanyNodePathMap;
 import com.tradeshift.companystructure.domain.lables.CompanyNode;
+import com.tradeshift.companystructure.domain.lables.RootNode;
 import com.tradeshift.companystructure.repositories.companynode.CompanyNodeRepositorySDN;
 import com.tradeshift.companystructure.repositories.exceptions.NodeNotFoundException;
+import com.tradeshift.companystructure.resourceassembler.CompanyNodeResourceAssembler;
 import com.tradeshift.companystructure.services.companynode.CompanyNodeImportService;
 import com.tradeshift.companystructure.services.companynode.CompanyNodeService;
 import com.tradeshift.companystructure.viewmodels.companynode.CompanyNodeVM;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Link;
+import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
+import org.springframework.hateoas.mvc.ControllerLinkBuilder;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -27,17 +32,21 @@ import java.util.stream.Collectors;
  * @since 2019-01-11
  */
 @RestController
-@RequestMapping(value = CompanyNodePathMap.API_V1, produces = "application/hal+json")
+@RequestMapping(value = CompanyNodePathMap.API_V1)
 public class CompanyNodeController {
 
     private static Logger logger = Logger.getLogger(CompanyNodeController.class.getName());
 
     private CompanyNodeService companyNodeService;
     private CompanyNodeImportService companyNodeImportService;
+    private CompanyNodeResourceAssembler companyNodeResourceAssembler;
 
-    public CompanyNodeController(CompanyNodeService companyNodeService, CompanyNodeImportService companyNodeImportService) {
+    public CompanyNodeController(CompanyNodeService companyNodeService,
+                                 CompanyNodeImportService companyNodeImportService,
+                                 CompanyNodeResourceAssembler companyNodeResourceAssembler) {
         this.companyNodeService = companyNodeService;
         this.companyNodeImportService = companyNodeImportService;
+        this.companyNodeResourceAssembler = companyNodeResourceAssembler;
     }
 
     /**
@@ -47,11 +56,11 @@ public class CompanyNodeController {
      * @return ResponseEntity<CompanyNode> This return root node.
      */
     @RequestMapping(value = CompanyNodePathMap.COMPANYNODES_INITIALDATA, method = RequestMethod.POST)
-    public ResponseEntity<CompanyNode> createNodesWithInitialData() {
-
+    public ResponseEntity<Resource<CompanyNode>> createNodesWithInitialData() {
         try {
             this.companyNodeImportService.clearDatabase();
-            return ResponseEntity.ok(this.companyNodeImportService.importPreData());
+            CompanyNode rootNode = this.companyNodeImportService.importPreData();
+            return ResponseEntity.ok(companyNodeResourceAssembler.toResource(rootNode));
         } catch (Exception ex) {
             logger.warning(ex.getMessage());
             throw ex;
@@ -62,13 +71,14 @@ public class CompanyNodeController {
      * This method is used to find company nodes
      * by id.
      *
-     * @return ResponseEntity<CompanyNode> This return company node.
+     * @return ResponseEntity<CompanyNode> This return company node with HATEOAS Template.
      */
     @RequestMapping(value = CompanyNodePathMap.COMPANYNODES_ID, method = RequestMethod.GET)
-    public ResponseEntity<CompanyNode> one(@PathVariable("id") long id) throws NodeNotFoundException {
+    public ResponseEntity<Resource<CompanyNode>> one(@PathVariable("id") long id) throws Exception {
 
         try {
-            return ResponseEntity.ok(this.companyNodeService.one(new CompanyNode(id)));
+            CompanyNode companyNode = this.companyNodeService.one(new CompanyNode(id));
+            return ResponseEntity.ok(companyNodeResourceAssembler.toResource(companyNode));
         } catch (Exception ex) {
             logger.warning(ex.getMessage());
             throw ex;
@@ -80,38 +90,18 @@ public class CompanyNodeController {
      * given node id.
      *
      * @param id This parameter specify node id.
-     * @return ResponseEntity<List       <       CompanyNode>> This return all children
+     * @return ResponseEntity<Resources < CompanyNodeVM>> This return all children
+     * through HATEOAS template.
      */
     @RequestMapping(value = CompanyNodePathMap.COMPANYNODES_ID_CHILDREN, method = RequestMethod.GET)
-    public ResponseEntity<List<CompanyNode>> getAllChildrenOfGivenNode(@PathVariable("id") long id) throws Exception {
+    public ResponseEntity<Resources<Resource<CompanyNode>>> getAllChildrenOfGivenNodeInRes(@PathVariable("id") long id) throws Exception {
 
         try {
-            return ResponseEntity.ok(companyNodeService.getAllChildren(new CompanyNode(id)));
-        } catch (Exception ex) {
-            logger.warning(ex.getMessage());
-            throw ex;
-        }
-    }
-
-    /**
-     * This method is used to get all children of
-     * given node id.
-     *
-     * @param id This parameter specify node id.
-     * @return ResponseEntity<Resources<CompanyNodeVM>> This return all children through HATEOAS template
-     */
-    @RequestMapping(value = CompanyNodePathMap.RES_COMPANYNODES_ID_CHILDREN, method = RequestMethod.GET)
-    public ResponseEntity<Resources<CompanyNodeVM>> getAllChildrenOfGivenNodeInRes(@PathVariable("id") long id) throws Exception {
-
-        try {
-            List<CompanyNodeVM> collection = companyNodeService.getAllChildren(new CompanyNode(id))
+            List<Resource<CompanyNode>> collection = companyNodeService.getAllChildren(new CompanyNode(id))
                     .stream()
-                    .map(CompanyNodeVM::new)
+                    .map(child -> companyNodeResourceAssembler.toResource(child))
                     .collect(Collectors.toList());
-            Resources<CompanyNodeVM> resources = new Resources<>(collection);
-            String uriString = ServletUriComponentsBuilder.fromCurrentRequest().build().toUriString();
-            resources.add(new Link(uriString, CompanyNodePathMap.SELF));
-            return ResponseEntity.ok(resources);
+            return ResponseEntity.ok(companyNodeResourceAssembler.toResources(collection));
         } catch (Exception ex) {
             logger.warning(ex.getMessage());
             throw ex;
@@ -124,21 +114,21 @@ public class CompanyNodeController {
      *
      * @param id       This parameter specify node id.
      * @param parentId This parameter specify new parent node id.
-     * @return ResponseEntity<CompanyNode> This return given node along updated parent.
+     * @return ResponseEntity<CompanyNode> This return given node along updated parent
+     * in HATEOAS Template.
      */
     @RequestMapping(value = CompanyNodePathMap.COMPANYNODES_ID_PARENT_PARENTID, method = RequestMethod.PUT)
-    public ResponseEntity<CompanyNode> changeParentNodeOfGivenNode(
+    public ResponseEntity<Resource<CompanyNode>> changeParentNodeOfGivenNode(
             @PathVariable("id") long id,
             @PathVariable("parentId") long parentId) throws Exception {
         try {
             CompanyNode companyNode = companyNodeService.updateNodeParent(new CompanyNode(id), new CompanyNode(parentId));
-            return ResponseEntity.ok(companyNode);
+            return ResponseEntity.ok(companyNodeResourceAssembler.toResource(companyNode));
         } catch (Exception e) {
             logger.warning(e.getMessage());
             throw e;
         }
     }
-
 
     /**
      * This method is used to test container is alive or not.
