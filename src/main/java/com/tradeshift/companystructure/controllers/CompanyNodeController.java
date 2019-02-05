@@ -59,10 +59,10 @@ public class CompanyNodeController {
     }
 
     /**
-     * This method is used to create company nodes
-     * with initial data.
+     * This method is used to find company nodes
+     * by id.
      *
-     * @return ResponseEntity<CompanyNode> This return root node.
+     * @return ResponseEntity<CompanyNode> This return company node.
      */
     @RequestMapping(value = CompanyNodePathMap.COMPANYNODES_ID, method = RequestMethod.GET)
     public ResponseEntity<CompanyNode> one(@PathVariable("id") long id) throws NodeNotFoundException {
