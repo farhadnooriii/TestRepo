@@ -28,13 +28,13 @@ public class CompanyNodeController {
 
     private static Logger logger = Logger.getLogger(CompanyNodeController.class.getName());
 
-    private CompanyNodeService companyNodeService;
-    private CompanyNodeImportService companyNodeImportService;
-    private CompanyNodeResourceAssembler companyNodeResourceAssembler;
+    private final CompanyNodeService companyNodeService;
+    private final CompanyNodeImportService companyNodeImportService;
+    private final CompanyNodeResourceAssembler companyNodeResourceAssembler;
 
-    public CompanyNodeController(CompanyNodeService companyNodeService,
-                                 CompanyNodeImportService companyNodeImportService,
-                                 CompanyNodeResourceAssembler companyNodeResourceAssembler) {
+    public CompanyNodeController(final CompanyNodeService companyNodeService,
+                                 final CompanyNodeImportService companyNodeImportService,
+                                 final CompanyNodeResourceAssembler companyNodeResourceAssembler) {
         this.companyNodeService = companyNodeService;
         this.companyNodeImportService = companyNodeImportService;
         this.companyNodeResourceAssembler = companyNodeResourceAssembler;
@@ -65,7 +65,7 @@ public class CompanyNodeController {
      * @return ResponseEntity<CompanyNode> This return company node with HATEOAS Template.
      */
     @RequestMapping(value = CompanyNodePathMap.COMPANYNODES_ID, method = RequestMethod.GET)
-    public ResponseEntity<Resource<CompanyNode>> one(@PathVariable("id") long id) throws Exception {
+    public ResponseEntity<Resource<CompanyNode>> one(@PathVariable("id")final long id) throws Exception {
 
         try {
             CompanyNode companyNode = this.companyNodeService.one(new CompanyNode(id));
@@ -83,7 +83,7 @@ public class CompanyNodeController {
      * @return ResponseEntity<CompanyNode> This return parent of company node with HATEOAS Template.
      */
     @RequestMapping(value = CompanyNodePathMap.COMPANYNODES_ID_PARENT, method = RequestMethod.GET)
-    public ResponseEntity<Resource<CompanyNode>> getParentNodeOfGivenNode(@PathVariable("id") long id) throws Exception {
+    public ResponseEntity<Resource<CompanyNode>> getParentNodeOfGivenNode(@PathVariable("id")final long id) throws Exception {
 
         try {
             CompanyNode companyNode = this.companyNodeService.getParent(new CompanyNode(id));
@@ -103,7 +103,7 @@ public class CompanyNodeController {
      * through HATEOAS template.
      */
     @RequestMapping(value = CompanyNodePathMap.COMPANYNODES_ID_CHILDREN, method = RequestMethod.GET)
-    public ResponseEntity<Resources<Resource<CompanyNode>>> getAllChildrenOfGivenNode(@PathVariable("id") long id) throws Exception {
+    public ResponseEntity<Resources<Resource<CompanyNode>>> getAllChildrenOfGivenNode(@PathVariable("id")final long id) throws Exception {
 
         try {
             List<Resource<CompanyNode>> collection = companyNodeService.getAllChildrenWithHeightAndRoot(new CompanyNode(id))
@@ -128,8 +128,8 @@ public class CompanyNodeController {
      */
     @RequestMapping(value = CompanyNodePathMap.COMPANYNODES_ID_PARENT_PARENTID, method = RequestMethod.PUT)
     public ResponseEntity<Resource<CompanyNode>> changeParentNodeOfGivenNode(
-            @PathVariable("id") long id,
-            @PathVariable("parentId") long parentId) throws Exception {
+            @PathVariable("id")final long id,
+            @PathVariable("parentId")final long parentId) throws Exception {
         try {
             CompanyNode companyNode = companyNodeService.updateNodeParent(new CompanyNode(id), new CompanyNode(parentId));
             return ResponseEntity.ok(companyNodeResourceAssembler.toResource(companyNode));

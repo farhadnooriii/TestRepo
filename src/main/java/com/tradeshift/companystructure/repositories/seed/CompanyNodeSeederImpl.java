@@ -9,9 +9,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class CompanyNodeSeederImpl implements CompanyNodeSeeder {
 
-    private CompanyNodeRepositorySDN companyNodeRepositorySDN;
+    private final CompanyNodeRepositorySDN companyNodeRepositorySDN;
 
-    public CompanyNodeSeederImpl(CompanyNodeRepositorySDN companyNodeRepositorySDN){
+    public CompanyNodeSeederImpl(final CompanyNodeRepositorySDN companyNodeRepositorySDN){
         this.companyNodeRepositorySDN = companyNodeRepositorySDN;
     }
     /**

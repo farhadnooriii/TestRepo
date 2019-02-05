@@ -23,11 +23,12 @@ import java.util.List;
 public class CompanyNodeServiceImpl implements CompanyNodeService {
 
 
-    private CompanyNodeValidation companyNodeValidation;
+    private final CompanyNodeValidation companyNodeValidation;
 
-    private CompanyNodeRepositorySDN companyNodeRepositorySDN;
+    private final CompanyNodeRepositorySDN companyNodeRepositorySDN;
 
-    public CompanyNodeServiceImpl(CompanyNodeValidation companyNodeValidation, CompanyNodeRepositorySDN companyNodeRepositorySDN) {
+    public CompanyNodeServiceImpl(final CompanyNodeValidation companyNodeValidation,
+                                  final CompanyNodeRepositorySDN companyNodeRepositorySDN) {
         this.companyNodeValidation = companyNodeValidation;
         this.companyNodeRepositorySDN = companyNodeRepositorySDN;
     }

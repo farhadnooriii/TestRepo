@@ -9,10 +9,11 @@ import org.springframework.stereotype.Service;
 public class CompanyNodeImportServiceImpl implements CompanyNodeImportService {
 
 
-    private CompanyNodeRepositorySDN companyNodeRepositorySDN;
-    private CompanyNodeSeeder companyNodeSeeder;
+    private final CompanyNodeRepositorySDN companyNodeRepositorySDN;
+    private final CompanyNodeSeeder companyNodeSeeder;
 
-    public CompanyNodeImportServiceImpl(CompanyNodeRepositorySDN companyNodeRepositorySDN,CompanyNodeSeeder companyNodeSeeder) {
+    public CompanyNodeImportServiceImpl(final CompanyNodeRepositorySDN companyNodeRepositorySDN,
+                                        final CompanyNodeSeeder companyNodeSeeder) {
         this.companyNodeRepositorySDN = companyNodeRepositorySDN;
         this.companyNodeSeeder = companyNodeSeeder;
     }
