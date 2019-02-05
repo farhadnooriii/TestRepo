@@ -2,22 +2,13 @@ package com.tradeshift.companystructure.controllers;
 
 import com.tradeshift.companystructure.constants.CompanyNodePathMap;
 import com.tradeshift.companystructure.domain.lables.CompanyNode;
-import com.tradeshift.companystructure.domain.lables.RootNode;
-import com.tradeshift.companystructure.repositories.companynode.CompanyNodeRepositorySDN;
-import com.tradeshift.companystructure.repositories.exceptions.NodeNotFoundException;
 import com.tradeshift.companystructure.resourceassembler.CompanyNodeResourceAssembler;
 import com.tradeshift.companystructure.services.companynode.CompanyNodeImportService;
 import com.tradeshift.companystructure.services.companynode.CompanyNodeService;
-import com.tradeshift.companystructure.viewmodels.companynode.CompanyNodeVM;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.Link;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
-import org.springframework.hateoas.mvc.ControllerLinkBuilder;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.util.List;
 import java.util.logging.Logger;
