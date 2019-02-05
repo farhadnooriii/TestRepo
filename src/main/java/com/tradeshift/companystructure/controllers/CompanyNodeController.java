@@ -77,6 +77,24 @@ public class CompanyNodeController {
     }
 
     /**
+     * This method is used to get parent of given node
+     * by id.
+     *
+     * @return ResponseEntity<CompanyNode> This return parent of company node with HATEOAS Template.
+     */
+    @RequestMapping(value = CompanyNodePathMap.COMPANYNODES_ID_PARENT, method = RequestMethod.GET)
+    public ResponseEntity<Resource<CompanyNode>> getParentNodeOfGivenNode(@PathVariable("id") long id) throws Exception {
+
+        try {
+            CompanyNode companyNode = this.companyNodeService.getParent(new CompanyNode(id));
+            return ResponseEntity.ok(companyNodeResourceAssembler.toResource(companyNode));
+        } catch (Exception ex) {
+            logger.warning(ex.getMessage());
+            throw ex;
+        }
+    }
+
+    /**
      * This method is used to get all children of
      * given node id.
      *
@@ -88,7 +106,7 @@ public class CompanyNodeController {
     public ResponseEntity<Resources<Resource<CompanyNode>>> getAllChildrenOfGivenNode(@PathVariable("id") long id) throws Exception {
 
         try {
-            List<Resource<CompanyNode>> collection = companyNodeService.getAllChildren(new CompanyNode(id))
+            List<Resource<CompanyNode>> collection = companyNodeService.getAllChildrenWithHeightAndRoot(new CompanyNode(id))
                     .stream()
                     .map(child -> companyNodeResourceAssembler.toResource(child))
                     .collect(Collectors.toList());

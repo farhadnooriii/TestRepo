@@ -6,6 +6,7 @@ import org.springframework.data.neo4j.annotation.Query;
 import org.springframework.data.neo4j.repository.Neo4jRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface CompanyNodeRepositorySDN extends Neo4jRepository<CompanyNode,Long> {
 
@@ -16,7 +17,7 @@ public interface CompanyNodeRepositorySDN extends Neo4jRepository<CompanyNode,Lo
     @Query("MATCH (rootNode:RootNode) RETURN rootNode LIMIT 1")
     RootNode findRootNode() throws Exception;
     @Query("MATCH (parentNode:CompanyNode)-[:rel]->(child:CompanyNode) WHERE ID(child) = {0} RETURN parentNode")
-    CompanyNode findParentNodeOfGivenNode(Long nodeId);
+    Optional<CompanyNode> findParentNodeOfGivenNode(Long nodeId);
     @Query("MATCH (companyNode:CompanyNode),(root:CompanyNode), p = shortestPath((companyNode)-[*]-(root)) WHERE ID(companyNode) = {0} AND ID(root) = {1} RETURN length(p) AS height")
     Long findHeightBetweenTwoNode(Long firstNodeId, Long secondNodeId);
 

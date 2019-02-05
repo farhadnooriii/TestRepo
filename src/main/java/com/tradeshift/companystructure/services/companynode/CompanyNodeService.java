@@ -9,6 +9,7 @@ import java.util.List;
 public interface CompanyNodeService {
 
     CompanyNode one(CompanyNode companyNode) throws NodeNotFoundException;
+    CompanyNode getParent(CompanyNode companyNode) throws NodeNotFoundException;
     List<CompanyNode> getAllChildren(CompanyNode companyNode) throws Exception;
     CompanyNode updateNodeParent(CompanyNode companyNode, CompanyNode parentNode) throws Exception;
     Long getHeightOfNode(Long nodeId) throws Exception;

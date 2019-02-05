@@ -39,6 +39,12 @@ public class CompanyNodeServiceImpl implements CompanyNodeService {
                 .orElseThrow(() -> new NodeNotFoundException(CompanyNode.class));
     }
 
+    @Override
+    public CompanyNode getParent(CompanyNode companyNode) throws NodeNotFoundException {
+
+        return this.companyNodeRepositorySDN.findParentNodeOfGivenNode(companyNode.getId())
+                .orElseThrow(() -> new NodeNotFoundException(CompanyNode.class,"id",companyNode.getId().toString()));
+    }
 
     /**
      * This method is used to get all children of
@@ -95,13 +101,12 @@ public class CompanyNodeServiceImpl implements CompanyNodeService {
         return companyNodeRepositorySDN.updateNodeParent(companyNode.getId(), parentNode.getId());
     }
 
-
-//    private void setRootAndHeight(CompanyNode companyNode) throws Exception {
-//        if(companyNode!=null) {
-//            companyNode.setRoot(this.companyNodeRepositorySDN.findRootNode());
-//            Long height = this.findHeightOfNode(companyNode.getId(), companyNode.getRoot().getId());
-//            companyNode.setHeight(height);
-//        }
-//    }
+    private void setRootAndHeight(CompanyNode companyNode) throws Exception {
+        if(companyNode!=null) {
+            companyNode.setRoot(this.companyNodeRepositorySDN.findRootNode());
+            Long height = this.companyNodeRepositorySDN.findHeightBetweenTwoNode(companyNode.getId(), companyNode.getRoot().getId());
+            companyNode.setHeight(height);
+        }
+    }
 
 }

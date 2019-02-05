@@ -3,6 +3,7 @@ package com.tradeshift.companystructure.resourceassembler;
 import com.tradeshift.companystructure.constants.CompanyNodePathMap;
 import com.tradeshift.companystructure.controllers.CompanyNodeController;
 import com.tradeshift.companystructure.domain.lables.CompanyNode;
+import com.tradeshift.companystructure.repositories.companynode.CompanyNodeRepositorySDN;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
@@ -20,6 +21,7 @@ public class CompanyNodeResourceAssemblerImpl implements CompanyNodeResourceAsse
         Resource<CompanyNode> companyNodeResource = new Resource<>(companyNode);
         try {
             companyNodeResource.add(ControllerLinkBuilder.linkTo(ControllerLinkBuilder.methodOn(CompanyNodeController.class).one(companyNode.getId())).withSelfRel());
+            companyNodeResource.add(ControllerLinkBuilder.linkTo(ControllerLinkBuilder.methodOn(CompanyNodeController.class).getParentNodeOfGivenNode(companyNode.getId())).withRel("parent"));
             companyNodeResource.add(ControllerLinkBuilder.linkTo(ControllerLinkBuilder.methodOn(CompanyNodeController.class).getAllChildrenOfGivenNode(companyNode.getId())).withRel("children"));
         } catch (Exception e) {
             e.printStackTrace();
@@ -34,18 +36,4 @@ public class CompanyNodeResourceAssemblerImpl implements CompanyNodeResourceAsse
         resources.add(new Link(uriString, CompanyNodePathMap.SELF));
         return resources;
     }
-
-
-//    @Override
-//    public Resources<CompanyNode> toResource(List<CompanyNode> companyNodes) {
-//        Resources<CompanyNode> companyNodeResources = new Resources<>(companyNodes);
-//        try {
-//            for()
-//            companyNodeResource.add(ControllerLinkBuilder.linkTo(ControllerLinkBuilder.methodOn(CompanyNodeController.class).one(companyNode.getId())).withSelfRel());
-//            companyNodeResource.add(ControllerLinkBuilder.linkTo(ControllerLinkBuilder.methodOn(CompanyNodeController.class).getAllChildrenOfGivenNode(companyNode.getId())).withRel("children"));
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        return companyNodeResource;
-//    }
 }
