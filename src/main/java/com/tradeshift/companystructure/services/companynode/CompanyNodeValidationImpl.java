@@ -35,7 +35,6 @@ public class CompanyNodeValidationImpl implements CompanyNodeValidation {
      */
     @Override
     public void checkNodeIsNotRootNode(CompanyNode companyNode) throws Exception {
-        this.checkInputNodeIsNotNull(companyNode);
         CompanyNode rootNode = this.companyNodeRepositorySDN.findRootNode();
         if (companyNode.getId().equals(rootNode.getId()))
             throw new Exception("node can not be root node");
@@ -50,9 +49,8 @@ public class CompanyNodeValidationImpl implements CompanyNodeValidation {
      */
     @Override
     public void checkNodeIsExist(CompanyNode companyNode) throws Exception {
-        this.checkInputNodeIsNotNull(companyNode);
         Optional<CompanyNode> node = this.companyNodeRepositorySDN.findById(companyNode.getId(), 0);
-        node.orElseThrow(NodeNotFoundException::new);
+        node.orElseThrow(() -> new NodeNotFoundException(CompanyNode.class));
     }
 
     /**

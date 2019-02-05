@@ -40,6 +40,8 @@ public class CompanyNodeServiceImpl implements CompanyNodeService {
      */
     @Override
     public List<CompanyNode> getAllChildren(CompanyNode companyNode) throws Exception {
+
+        this.companyNodeValidation.checkInputNodeIsNotNull(companyNode);
         this.companyNodeValidation.checkNodeIsExist(companyNode);
         return companyNodeRepositorySDN.findAllChildrenOfGivenNode(companyNode.getId());
     }
@@ -75,12 +77,14 @@ public class CompanyNodeServiceImpl implements CompanyNodeService {
      */
     @Override
     public CompanyNode updateNodeParent(CompanyNode companyNode, CompanyNode parentNode) throws Exception {
+
+        this.companyNodeValidation.checkInputNodeIsNotNull(companyNode);
+        this.companyNodeValidation.checkInputNodeIsNotNull(parentNode);
         this.companyNodeValidation.checkNodeIsExist(companyNode);
         this.companyNodeValidation.checkNodeIsExist(parentNode);
         this.companyNodeValidation.checkNodeIsNotRootNode(companyNode);
         return companyNodeRepositorySDN.updateNodeParent(companyNode.getId(), parentNode.getId());
     }
-
 
 
 //    private void setRootAndHeight(CompanyNode companyNode) throws Exception {
