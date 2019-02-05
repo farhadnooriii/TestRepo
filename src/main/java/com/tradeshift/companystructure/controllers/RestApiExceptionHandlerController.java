@@ -94,7 +94,7 @@ public class RestApiExceptionHandlerController extends ResponseEntityExceptionHa
     @ExceptionHandler(Exception.class)
     protected ResponseEntity<Object> handleDefaultMethod(Exception ex) {
         RestApiErrorVM restApiErrorVM = new RestApiErrorVM(HttpStatus.BAD_REQUEST);
-        restApiErrorVM.setMessage(String.format("There is Exception. Contact to Administrator"));
+        restApiErrorVM.setMessage(ex.getMessage());
         restApiErrorVM.setDebugMessage(ex.getMessage());
         restApiErrorVM.setExceptionClass(ex.getClass().getName());
         return buildResponseEntity(restApiErrorVM);
