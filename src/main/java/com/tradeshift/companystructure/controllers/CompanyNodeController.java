@@ -2,6 +2,8 @@ package com.tradeshift.companystructure.controllers;
 
 import com.tradeshift.companystructure.constants.CompanyNodePathMap;
 import com.tradeshift.companystructure.domain.lables.CompanyNode;
+import com.tradeshift.companystructure.repositories.companynode.CompanyNodeRepositorySDN;
+import com.tradeshift.companystructure.services.companynode.CompanyNodeImportService;
 import com.tradeshift.companystructure.services.companynode.CompanyNodeService;
 import com.tradeshift.companystructure.viewmodels.companynode.CompanyNodeVM;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,15 +30,39 @@ import java.util.stream.Collectors;
 public class CompanyNodeController {
 
     private static Logger logger = Logger.getLogger(CompanyNodeController.class.getName());
-    @Autowired
+
     private CompanyNodeService companyNodeService;
+    private CompanyNodeImportService companyNodeImportService;
+
+    public CompanyNodeController(CompanyNodeService companyNodeService, CompanyNodeImportService companyNodeImportService) {
+        this.companyNodeService = companyNodeService;
+        this.companyNodeImportService = companyNodeImportService;
+    }
+
+    /**
+     * This method is used to create company nodes
+     * with initial data.
+     *
+     * @return ResponseEntity<CompanyNode> This return root node.
+     */
+    @RequestMapping(value = CompanyNodePathMap.COMPANYNODES_INITIALDATA, method = RequestMethod.POST)
+    public ResponseEntity<CompanyNode> createNodesWithInitialData() {
+
+        try {
+            this.companyNodeImportService.clearDatabase();
+            return ResponseEntity.ok(this.companyNodeImportService.importPreData());
+        } catch (Exception ex) {
+            logger.warning(ex.getMessage());
+            throw ex;
+        }
+    }
 
     /**
      * This method is used to get all children of
      * given node id.
      *
      * @param id This parameter specify node id.
-     * @return ResponseEntity<List < CompanyNode>> This return all children
+     * @return ResponseEntity<List       <       CompanyNode>> This return all children
      */
     @RequestMapping(value = CompanyNodePathMap.COMPANYNODES_ID_CHILDREN, method = RequestMethod.GET)
     public ResponseEntity<List<CompanyNode>> getAllChildrenOfGivenNode(@PathVariable("id") long id) throws Exception {
@@ -54,7 +80,7 @@ public class CompanyNodeController {
      * given node id.
      *
      * @param id This parameter specify node id.
-     * @return ResponseEntity<Resources < CompanyNodeVM>> This return all children through HATEOAS template
+     * @return ResponseEntity<Resources<CompanyNodeVM>> This return all children through HATEOAS template
      */
     @RequestMapping(value = CompanyNodePathMap.RES_COMPANYNODES_ID_CHILDREN, method = RequestMethod.GET)
     public ResponseEntity<Resources<CompanyNodeVM>> getAllChildrenOfGivenNodeInRes(@PathVariable("id") long id) throws Exception {
