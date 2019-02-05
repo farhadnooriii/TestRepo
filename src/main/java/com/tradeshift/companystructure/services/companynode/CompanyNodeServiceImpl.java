@@ -4,6 +4,7 @@ import com.tradeshift.companystructure.domain.lables.CompanyNode;
 import com.tradeshift.companystructure.domain.lables.RootNode;
 import com.tradeshift.companystructure.repositories.companynode.CompanyNodeRepositorySDN;
 import org.springframework.stereotype.Service;
+import com.tradeshift.companystructure.repositories.exceptions.NodeNotFoundException;
 
 import java.util.List;
 
@@ -30,6 +31,14 @@ public class CompanyNodeServiceImpl implements CompanyNodeService {
         this.companyNodeValidation = companyNodeValidation;
         this.companyNodeRepositorySDN = companyNodeRepositorySDN;
     }
+
+    @Override
+    public CompanyNode one(CompanyNode companyNode) throws NodeNotFoundException {
+
+        return this.companyNodeRepositorySDN.findById(companyNode.getId())
+                .orElseThrow(() -> new NodeNotFoundException(CompanyNode.class));
+    }
+
 
     /**
      * This method is used to get all children of

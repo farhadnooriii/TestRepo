@@ -3,6 +3,7 @@ package com.tradeshift.companystructure.controllers;
 import com.tradeshift.companystructure.constants.CompanyNodePathMap;
 import com.tradeshift.companystructure.domain.lables.CompanyNode;
 import com.tradeshift.companystructure.repositories.companynode.CompanyNodeRepositorySDN;
+import com.tradeshift.companystructure.repositories.exceptions.NodeNotFoundException;
 import com.tradeshift.companystructure.services.companynode.CompanyNodeImportService;
 import com.tradeshift.companystructure.services.companynode.CompanyNodeService;
 import com.tradeshift.companystructure.viewmodels.companynode.CompanyNodeVM;
@@ -51,6 +52,23 @@ public class CompanyNodeController {
         try {
             this.companyNodeImportService.clearDatabase();
             return ResponseEntity.ok(this.companyNodeImportService.importPreData());
+        } catch (Exception ex) {
+            logger.warning(ex.getMessage());
+            throw ex;
+        }
+    }
+
+    /**
+     * This method is used to create company nodes
+     * with initial data.
+     *
+     * @return ResponseEntity<CompanyNode> This return root node.
+     */
+    @RequestMapping(value = CompanyNodePathMap.COMPANYNODES_ID, method = RequestMethod.GET)
+    public ResponseEntity<CompanyNode> one(@PathVariable("id") long id) throws NodeNotFoundException {
+
+        try {
+            return ResponseEntity.ok(this.companyNodeService.one(new CompanyNode(id)));
         } catch (Exception ex) {
             logger.warning(ex.getMessage());
             throw ex;
