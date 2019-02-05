@@ -1,6 +1,6 @@
 package com.tradeshift.companystructure.controllers;
 
-import com.tradeshift.companystructure.constants.CompanyNodePathMap;
+import com.tradeshift.companystructure.constants.companynode.CompanyNodePathMap;
 import com.tradeshift.companystructure.domain.lables.CompanyNode;
 import com.tradeshift.companystructure.resourceassembler.CompanyNodeResourceAssembler;
 import com.tradeshift.companystructure.services.companynode.CompanyNodeImportService;
