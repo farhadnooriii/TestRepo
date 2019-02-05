@@ -20,9 +20,9 @@ import java.util.Optional;
 @Component
 public class CompanyNodeValidationImpl implements CompanyNodeValidation {
 
-    private CompanyNodeRepositorySDN companyNodeRepositorySDN;
+    private final CompanyNodeRepositorySDN companyNodeRepositorySDN;
 
-    public CompanyNodeValidationImpl(CompanyNodeRepositorySDN companyNodeRepositorySDN) {
+    public CompanyNodeValidationImpl(final CompanyNodeRepositorySDN companyNodeRepositorySDN) {
         this.companyNodeRepositorySDN = companyNodeRepositorySDN;
     }
 

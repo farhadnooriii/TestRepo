@@ -3,7 +3,6 @@ package com.tradeshift.companystructure.repositories.seed;
 import com.tradeshift.companystructure.domain.lables.CompanyNode;
 import com.tradeshift.companystructure.domain.lables.RootNode;
 import com.tradeshift.companystructure.repositories.companynode.CompanyNodeRepositorySDN;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
