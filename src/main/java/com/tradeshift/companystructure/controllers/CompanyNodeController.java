@@ -85,7 +85,7 @@ public class CompanyNodeController {
      * through HATEOAS template.
      */
     @RequestMapping(value = CompanyNodePathMap.COMPANYNODES_ID_CHILDREN, method = RequestMethod.GET)
-    public ResponseEntity<Resources<Resource<CompanyNode>>> getAllChildrenOfGivenNodeInRes(@PathVariable("id") long id) throws Exception {
+    public ResponseEntity<Resources<Resource<CompanyNode>>> getAllChildrenOfGivenNode(@PathVariable("id") long id) throws Exception {
 
         try {
             List<Resource<CompanyNode>> collection = companyNodeService.getAllChildren(new CompanyNode(id))
