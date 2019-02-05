@@ -1,10 +1,11 @@
 package com.tradeshift.companystructure.services.companynode;
 
 import com.tradeshift.companystructure.domain.lables.CompanyNode;
-import com.tradeshift.companystructure.repositories.companynode.CompanyNodeRepository;
+import com.tradeshift.companystructure.repositories.companynode.CompanyNodeRepositorySDN;
 import com.tradeshift.companystructure.repositories.exceptions.NodeNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.Optional;
 
 /**
  * <h1> CompanyNodeValidationImpl </h1>
@@ -19,8 +20,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class CompanyNodeValidationImpl implements CompanyNodeValidation {
 
-    @Autowired
-    private CompanyNodeRepository companyNodeRepository;
+    private CompanyNodeRepositorySDN companyNodeRepositorySDN;
+
+    public CompanyNodeValidationImpl(CompanyNodeRepositorySDN companyNodeRepositorySDN) {
+        this.companyNodeRepositorySDN = companyNodeRepositorySDN;
+    }
 
     /**
      * This method is used to check that given node
@@ -32,7 +36,7 @@ public class CompanyNodeValidationImpl implements CompanyNodeValidation {
     @Override
     public void checkNodeIsNotRootNode(CompanyNode companyNode) throws Exception {
         this.checkInputNodeIsNotNull(companyNode);
-        CompanyNode rootNode = this.companyNodeRepository.findRootNode();
+        CompanyNode rootNode = this.companyNodeRepositorySDN.findRootNode();
         if (companyNode.getId().equals(rootNode.getId()))
             throw new Exception("node can not be root node");
     }
@@ -47,9 +51,8 @@ public class CompanyNodeValidationImpl implements CompanyNodeValidation {
     @Override
     public void checkNodeIsExist(CompanyNode companyNode) throws Exception {
         this.checkInputNodeIsNotNull(companyNode);
-        CompanyNode node = this.companyNodeRepository.findById(companyNode.getId(), 0);
-        if (node == null)
-            throw new NodeNotFoundException(CompanyNode.class, "id", companyNode.getId().toString());
+        Optional<CompanyNode> node = this.companyNodeRepositorySDN.findById(companyNode.getId(), 0);
+        node.orElseThrow(NodeNotFoundException::new);
     }
 
     /**
