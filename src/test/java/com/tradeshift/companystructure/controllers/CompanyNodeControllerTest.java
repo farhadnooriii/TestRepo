@@ -1,6 +1,9 @@
 package com.tradeshift.companystructure.controllers;
 
+import com.tradeshift.companystructure.constants.companynode.CompanyNodeHateoasTag;
 import com.tradeshift.companystructure.domain.lables.CompanyNode;
+import com.tradeshift.companystructure.repositories.exceptions.NodeNotFoundException;
+import com.tradeshift.companystructure.resourceassembler.CompanyNodeResourceAssembler;
 import com.tradeshift.companystructure.services.companynode.CompanyNodeService;
 import org.hamcrest.Matchers;
 import org.junit.Before;
@@ -12,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
+import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
@@ -26,9 +30,13 @@ public class CompanyNodeControllerTest {
 
     @Mock
     private CompanyNodeService companyNodeServiceMock;
+    @Mock
+    private CompanyNodeResourceAssembler companyNodeResourceAssemblerMock;
     @InjectMocks
     private CompanyNodeController companyNodeController;
+
     private List<CompanyNode> children;
+    private List<Resource<CompanyNode>> companyResources;
 
     @Before
     public void init() {
@@ -37,6 +45,12 @@ public class CompanyNodeControllerTest {
         children.add(new CompanyNode(2L, "child2"));
         children.add(new CompanyNode(3L, "child3"));
         children.add(new CompanyNode(4L, "child4"));
+
+        companyResources = new ArrayList<>();
+        companyResources.add(new Resource<>(children.get(0)));
+        companyResources.add(new Resource<>(children.get(1)));
+        companyResources.add(new Resource<>(children.get(2)));
+        companyResources.add(new Resource<>(children.get(3)));
     }
 
     @Test
@@ -48,44 +62,52 @@ public class CompanyNodeControllerTest {
     public void getAllChildrenOfGivenNode_checkChildrenList_isNotEmpty() throws Exception {
 
         CompanyNode companyNode = new CompanyNode(12L);
-        BDDMockito.given(companyNodeServiceMock.getChildren(companyNode)).willReturn(children);
+        BDDMockito.given(companyNodeServiceMock.getChildrenWithHeightAndRoot(companyNode)).willReturn(children);
+        BDDMockito.given(companyNodeResourceAssemblerMock.toResource(children.get(0))).willReturn(companyResources.get(0));
+        BDDMockito.given(companyNodeResourceAssemblerMock.toResource(children.get(1))).willReturn(companyResources.get(1));
+        BDDMockito.given(companyNodeResourceAssemblerMock.toResource(children.get(2))).willReturn(companyResources.get(2));
+        BDDMockito.given(companyNodeResourceAssemblerMock.toResource(children.get(3))).willReturn(companyResources.get(3));
+        BDDMockito.given(companyNodeResourceAssemblerMock.toResources(companyResources)).willReturn(new Resources<>(companyResources));
         ResponseEntity<Resources<Resource<CompanyNode>>> companyNodes = companyNodeController.getAllChildrenOfGivenNode(companyNode.getId());
         assertThat(companyNodes.getBody().getContent(), is(not(Matchers.empty())));
     }
 
-//    @Test
-//    public void getAllChildrenOfGivenNode_checkChildrenListSize_beEquals() throws Exception {
-//
-//        CompanyNode companyNode = new CompanyNode(10L);
-//        BDDMockito.given(companyNodeServiceMock.getAllChildren(companyNode)).willReturn(children);
-//        ResponseEntity<List<CompanyNode>> companyNodes = companyNodeController.getAllChildrenOfGivenNode(companyNode.getId());
-//        assertThat(companyNodes.getBody(), hasSize(this.children.size()));
-//    }
+    @Test
+    public void getAllChildrenOfGivenNode_checkChildrenListSize_beEquals() throws Exception {
 
-//    @Test
-//    public void getAllChildrenOfGivenNode_checkAllChildren_isExist() throws Exception {
-//
-//        CompanyNode companyNode = new CompanyNode(10L);
-//        BDDMockito.given(companyNodeServiceMock.getAllChildren(companyNode)).willReturn(children);
-//        ResponseEntity<List<CompanyNode>> companyNodes = companyNodeController.getAllChildrenOfGivenNode(companyNode.getId());
-//        assertThat(companyNodes.getBody(), is(children));
-//    }
+        CompanyNode companyNode = new CompanyNode(12L);
+        BDDMockito.given(companyNodeServiceMock.getChildrenWithHeightAndRoot(companyNode)).willReturn(children);
+        BDDMockito.given(companyNodeResourceAssemblerMock.toResource(children.get(0))).willReturn(companyResources.get(0));
+        BDDMockito.given(companyNodeResourceAssemblerMock.toResource(children.get(1))).willReturn(companyResources.get(1));
+        BDDMockito.given(companyNodeResourceAssemblerMock.toResource(children.get(2))).willReturn(companyResources.get(2));
+        BDDMockito.given(companyNodeResourceAssemblerMock.toResource(children.get(3))).willReturn(companyResources.get(3));
+        BDDMockito.given(companyNodeResourceAssemblerMock.toResources(companyResources)).willReturn(new Resources<>(companyResources));
+        ResponseEntity<Resources<Resource<CompanyNode>>> companyNodes = companyNodeController.getAllChildrenOfGivenNode(companyNode.getId());
+        assertThat(companyNodes.getBody().getContent(), hasSize(this.children.size()));
+    }
 
-//    @Test
-//    public void getAllChildrenOfGivenNode_givenNodeIsZero_childrenListShouldEmpty() throws Exception {
-//
-//        ResponseEntity<List<CompanyNode>> companyNodes = companyNodeController.getAllChildrenOfGivenNode(0);
-//        assertThat(companyNodes.getBody(), is(Matchers.empty()));
-//    }
+    @Test
+    public void getAllChildrenOfGivenNode_checkAllChildren_isExist() throws Exception {
 
-//    @Test
-//    public void getAllChildrenOfGivenNode_thrownException_childrenListIsEmpty() throws Exception {
-//
-//        CompanyNode companyNode = new CompanyNode(10L);
-//        BDDMockito.given(companyNodeServiceMock.getAllChildren(companyNode)).willThrow(Exception.class);
-//        ResponseEntity<List<CompanyNode>> companyNodes = companyNodeController.getAllChildrenOfGivenNode(companyNode.getId());
-//        assertThat(companyNodes.getBody(), is(Matchers.empty()));
-//    }
+        CompanyNode companyNode = new CompanyNode(12L);
+        BDDMockito.given(companyNodeServiceMock.getChildrenWithHeightAndRoot(companyNode)).willReturn(children);
+        BDDMockito.given(companyNodeResourceAssemblerMock.toResource(children.get(0))).willReturn(companyResources.get(0));
+        BDDMockito.given(companyNodeResourceAssemblerMock.toResource(children.get(1))).willReturn(companyResources.get(1));
+        BDDMockito.given(companyNodeResourceAssemblerMock.toResource(children.get(2))).willReturn(companyResources.get(2));
+        BDDMockito.given(companyNodeResourceAssemblerMock.toResource(children.get(3))).willReturn(companyResources.get(3));
+        BDDMockito.given(companyNodeResourceAssemblerMock.toResources(companyResources)).willReturn(new Resources<>(companyResources));
+        ResponseEntity<Resources<Resource<CompanyNode>>> companyNodes = companyNodeController.getAllChildrenOfGivenNode(companyNode.getId());
+        assertThat(companyNodes.getBody().getContent(), is(companyResources));
+
+    }
+
+    @Test(expected = NodeNotFoundException.class)
+    public void getAllChildrenOfGivenNode_companyNodeService_thrownException() throws Exception {
+
+        CompanyNode companyNode = new CompanyNode(10L);
+        BDDMockito.given(companyNodeServiceMock.getChildrenWithHeightAndRoot(companyNode)).willThrow(NodeNotFoundException.class);
+        companyNodeController.getAllChildrenOfGivenNode(companyNode.getId());
+    }
 
 
 
