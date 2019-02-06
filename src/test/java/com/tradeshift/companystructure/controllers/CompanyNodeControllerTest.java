@@ -97,7 +97,7 @@ public class CompanyNodeControllerTest {
         BDDMockito.given(companyNodeResourceAssemblerMock.toResource(children.get(3))).willReturn(companyResources.get(3));
         BDDMockito.given(companyNodeResourceAssemblerMock.toResources(companyResources)).willReturn(new Resources<>(companyResources));
         ResponseEntity<Resources<Resource<CompanyNode>>> companyNodes = companyNodeController.getAllChildrenOfGivenNode(companyNode.getId());
-        assertThat(companyNodes.getBody().getContent(), is(companyResources));
+        assertThat(new ArrayList<>(companyNodes.getBody().getContent()), is(new ArrayList(companyResources)));
 
     }
 
