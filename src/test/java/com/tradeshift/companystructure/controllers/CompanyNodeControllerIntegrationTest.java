@@ -7,10 +7,14 @@ import org.hamcrest.core.StringContains;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.hateoas.MediaTypes;
+import org.springframework.hateoas.Resource;
+import org.springframework.hateoas.Resources;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -37,6 +41,7 @@ public class CompanyNodeControllerIntegrationTest {
     @MockBean
     private CompanyNodeController companyNodeControllerMock;
     private List<CompanyNode> children;
+    private List<Resource<CompanyNode>> companyResources;
 
     @Before
     public void init() {
@@ -45,44 +50,50 @@ public class CompanyNodeControllerIntegrationTest {
         children.add(new CompanyNode(2L, "child2"));
         children.add(new CompanyNode(3L, "child3"));
         children.add(new CompanyNode(4L, "child4"));
+
+        companyResources = new ArrayList<>();
+        companyResources.add(new Resource<>(children.get(0)));
+        companyResources.add(new Resource<>(children.get(1)));
+        companyResources.add(new Resource<>(children.get(2)));
+        companyResources.add(new Resource<>(children.get(3)));
     }
 
-//    @Test
-//    public void getAllChildrenOfGivenNode_checkReturnedJson_isNotEmpty() throws Exception {
-//        Long nodeId = 10L;
-//        given(companyNodeControllerMock.getAllChildrenOfGivenNode(nodeId)).willReturn(ResponseEntity.ok(children));
-//        this.mockMvc.perform(get("/api/v1/companynodes/".concat(nodeId.toString()).concat("/childrens")))
-//                .andExpect(status().isOk())
-//                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
-//                .andExpect(jsonPath("$", is(not(Matchers.empty()))));
-//    }
+    @Test
+    public void getAllChildrenOfGivenNode_checkReturnedJson_isNotEmpty() throws Exception {
+        long nodeId = 10l;
+        given(companyNodeControllerMock.getAllChildrenOfGivenNode(nodeId)).willReturn(ResponseEntity.ok(new Resources<>(companyResources)));
+        this.mockMvc.perform(get("/api/v1/companynodes/".concat(Long.toString(nodeId)).concat("/children")))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaTypes.HAL_JSON_UTF8))
+                .andExpect(jsonPath("$", is(not(Matchers.empty()))));
+    }
 
-//    @Test
-//    public void getChildren_checkReturnedJsonSize_beEquals() throws Exception {
-//        Long nodeId = 10L;
-//        given(companyNodeControllerMock.getAllChildrenOfGivenNode(nodeId)).willReturn(ResponseEntity.ok(children));
-//        this.mockMvc.perform(get("/api/v1/companynodes/".concat(nodeId.toString()).concat("/childrens")))
-//                .andExpect(status().isOk())
-//                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
-//                .andExpect(jsonPath("$", hasSize(children.size())));
-//    }
+    @Test
+    public void getChildren_checkReturnedJsonSize_beEquals() throws Exception {
+        long nodeId = 10l;
+        given(companyNodeControllerMock.getAllChildrenOfGivenNode(nodeId)).willReturn(ResponseEntity.ok(new Resources<>(companyResources)));
+        this.mockMvc.perform(get("/api/v1/companynodes/".concat(Long.toString(nodeId)).concat("/children")))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaTypes.HAL_JSON_UTF8))
+                .andExpect(jsonPath("$", hasSize(children.size())));
+    }
 
-//    @Test
-//    public void getChildren_checkReturnedJson_allChildren_isExist() throws Exception {
-//        Long nodeId = 10L;
-//        given(companyNodeControllerMock.getAllChildrenOfGivenNode(nodeId)).willReturn(ResponseEntity.ok(children));
-//        this.mockMvc.perform(get("/api/v1/companynodes/".concat(nodeId.toString()).concat("/childrens")))
-//                .andExpect(status().isOk())
-//                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
-//                .andExpect(jsonPath("$[0].id", is(1)))
-//                .andExpect(jsonPath("$[0].name", is("child1")))
-//                .andExpect(jsonPath("$[1].id", is(2)))
-//                .andExpect(jsonPath("$[1].name", is("child2")))
-//                .andExpect(jsonPath("$[2].id", is(3)))
-//                .andExpect(jsonPath("$[2].name", is("child3")))
-//                .andExpect(jsonPath("$[3].id", is(4)))
-//                .andExpect(jsonPath("$[3].name", is("child4")));
-//    }
+    @Test
+    public void getChildren_checkReturnedJson_allChildren_isExist() throws Exception {
+        long nodeId = 10l;
+        given(companyNodeControllerMock.getAllChildrenOfGivenNode(nodeId)).willReturn(ResponseEntity.ok(new Resources<>(companyResources)));
+        this.mockMvc.perform(get("/api/v1/companynodes/".concat(Long.toString(nodeId)).concat("/children")))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaTypes.HAL_JSON_UTF8))
+                .andExpect(jsonPath("$[0].id", is(1)))
+                .andExpect(jsonPath("$[0].name", is("child1")))
+                .andExpect(jsonPath("$[1].id", is(2)))
+                .andExpect(jsonPath("$[1].name", is("child2")))
+                .andExpect(jsonPath("$[2].id", is(3)))
+                .andExpect(jsonPath("$[2].name", is("child3")))
+                .andExpect(jsonPath("$[3].id", is(4)))
+                .andExpect(jsonPath("$[3].name", is("child4")));
+    }
 
     @Test
     public void getChildren_givenNodeIsZero_childrenListIsEmpty() throws Exception {
@@ -98,7 +109,7 @@ public class CompanyNodeControllerIntegrationTest {
         this.mockMvc.perform(get("/api/v1/companystructure/isAlive"))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(content().contentType(MediaTypes.HAL_JSON_UTF8))
                 .andExpect(content().string(StringContains.containsString("container is running")));
     }
 
