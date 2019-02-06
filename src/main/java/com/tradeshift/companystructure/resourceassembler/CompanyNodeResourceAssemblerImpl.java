@@ -16,6 +16,7 @@ import java.util.List;
 public class CompanyNodeResourceAssemblerImpl implements CompanyNodeResourceAssembler {
 
     @Override
+
     public Resource<CompanyNode> toResource(CompanyNode companyNode) {
         Resource<CompanyNode> companyNodeResource = new Resource<>(companyNode);
         try {

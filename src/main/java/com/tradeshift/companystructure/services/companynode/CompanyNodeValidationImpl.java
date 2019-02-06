@@ -1,6 +1,7 @@
 package com.tradeshift.companystructure.services.companynode;
 
 import com.tradeshift.companystructure.domain.lables.CompanyNode;
+import com.tradeshift.companystructure.domain.lables.RootNode;
 import com.tradeshift.companystructure.repositories.companynode.CompanyNodeRepositorySDN;
 import com.tradeshift.companystructure.repositories.exceptions.NodeNotFoundException;
 import org.springframework.stereotype.Component;
@@ -35,7 +36,8 @@ public class CompanyNodeValidationImpl implements CompanyNodeValidation {
      */
     @Override
     public void checkNodeIsNotRootNode(CompanyNode companyNode) throws Exception {
-        CompanyNode rootNode = this.companyNodeRepositorySDN.findRootNode();
+        RootNode rootNode = this.companyNodeRepositorySDN.findRootNode()
+                .orElseThrow(()-> new NodeNotFoundException(RootNode.class, "Root Node Not Fount"));
         if (companyNode.getId().equals(rootNode.getId()))
             throw new Exception("node can not be root node");
     }

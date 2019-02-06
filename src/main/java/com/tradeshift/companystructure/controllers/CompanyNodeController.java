@@ -106,9 +106,9 @@ public class CompanyNodeController {
     public ResponseEntity<Resources<Resource<CompanyNode>>> getAllChildrenOfGivenNode(@PathVariable("id")final long id) throws Exception {
 
         try {
-            List<Resource<CompanyNode>> collection = companyNodeService.getAllChildrenWithHeightAndRoot(new CompanyNode(id))
+            List<Resource<CompanyNode>> collection = companyNodeService.getChildrenWithHeightAndRoot(new CompanyNode(id))
                     .stream()
-                    .map(child -> companyNodeResourceAssembler.toResource(child))
+                    .map(companyNodeResourceAssembler::toResource)
                     .collect(Collectors.toList());
             return ResponseEntity.ok(companyNodeResourceAssembler.toResources(collection));
         } catch (Exception ex) {

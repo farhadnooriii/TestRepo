@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import com.tradeshift.companystructure.repositories.exceptions.NodeNotFoundException;
 
 import java.util.List;
+import java.util.Optional;
 
 
 /**
@@ -44,7 +45,14 @@ public class CompanyNodeServiceImpl implements CompanyNodeService {
     public CompanyNode getParent(CompanyNode companyNode) throws NodeNotFoundException {
 
         return this.companyNodeRepositorySDN.findParentNodeOfGivenNode(companyNode.getId())
-                .orElseThrow(() -> new NodeNotFoundException(CompanyNode.class,"id",companyNode.getId().toString()));
+                .orElseThrow(() -> new NodeNotFoundException(CompanyNode.class, "id", companyNode.getId().toString()));
+    }
+
+    @Override
+    public RootNode getRoot() throws Exception {
+
+        return this.companyNodeRepositorySDN.findRootNode()
+                .orElseThrow(()-> new NodeNotFoundException(RootNode.class,"Root Node Not Found"));
     }
 
     /**
@@ -55,7 +63,7 @@ public class CompanyNodeServiceImpl implements CompanyNodeService {
      * @return List<CompanyNode></CompanyNode> This return all children
      */
     @Override
-    public List<CompanyNode> getAllChildren(CompanyNode companyNode) throws Exception {
+    public List<CompanyNode> getChildren(CompanyNode companyNode) throws Exception {
 
         this.companyNodeValidation.checkInputNodeIsNotNull(companyNode);
         this.companyNodeValidation.checkNodeIsExist(companyNode);
@@ -63,24 +71,27 @@ public class CompanyNodeServiceImpl implements CompanyNodeService {
     }
 
     @Override
-    public Long getHeightOfNode(Long nodeId) throws Exception {
+    public Long getHeight(Long nodeId) throws Exception {
 
-        RootNode rootNode = this.companyNodeRepositorySDN.findRootNode();
+        RootNode rootNode = this.getRoot();
         return this.companyNodeRepositorySDN.findHeightBetweenTwoNode(nodeId, rootNode.getId());
     }
 
     @Override
-    public List<CompanyNode> getAllChildrenWithHeightAndRoot(CompanyNode companyNode) throws Exception {
+    public List<CompanyNode> getChildrenWithHeightAndRoot(CompanyNode companyNode) throws Exception {
 
-        List<CompanyNode> children = this.getAllChildren(companyNode);
-        RootNode rootNode = this.companyNodeRepositorySDN.findRootNode();
+        List<CompanyNode> children = this.getChildren(companyNode);
+        RootNode rootNode = this.getRoot();
         if (children.isEmpty())
             return children;
         Long height = this.companyNodeRepositorySDN.findHeightBetweenTwoNode(children.get(0).getId(), rootNode.getId());
-        for (CompanyNode child : children) {
-            child.setRoot(rootNode);
-            child.setHeight(height);
-        }
+        children.forEach(child ->
+                {
+                    child.setRoot(rootNode);
+                    child.setHeight(height);
+                }
+
+        );
         return children;
     }
 
@@ -103,8 +114,8 @@ public class CompanyNodeServiceImpl implements CompanyNodeService {
     }
 
     private void setRootAndHeight(CompanyNode companyNode) throws Exception {
-        if(companyNode!=null) {
-            companyNode.setRoot(this.companyNodeRepositorySDN.findRootNode());
+        if (companyNode != null) {
+            companyNode.setRoot(this.getRoot());
             Long height = this.companyNodeRepositorySDN.findHeightBetweenTwoNode(companyNode.getId(), companyNode.getRoot().getId());
             companyNode.setHeight(height);
         }

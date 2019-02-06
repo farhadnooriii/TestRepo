@@ -15,7 +15,7 @@ public interface CompanyNodeRepositorySDN extends Neo4jRepository<CompanyNode,Lo
     @Query("MATCH (parent:CompanyNode)-[r:rel]->(companyNode:CompanyNode) WHERE ID(companyNode) = {0} WITH companyNode,r DELETE r WITH companyNode MATCH (newParentNode:CompanyNode) WHERE ID(newParentNode) = {1} MERGE (newParentNode)-[:rel]->(companyNode) RETURN companyNode")
     CompanyNode updateNodeParent(Long nodeId,Long newParentId);
     @Query("MATCH (rootNode:RootNode) RETURN rootNode LIMIT 1")
-    RootNode findRootNode() throws Exception;
+    Optional<RootNode> findRootNode() throws Exception;
     @Query("MATCH (parentNode:CompanyNode)-[:rel]->(child:CompanyNode) WHERE ID(child) = {0} RETURN parentNode")
     Optional<CompanyNode> findParentNodeOfGivenNode(Long nodeId);
     @Query("MATCH (companyNode:CompanyNode),(root:CompanyNode), p = shortestPath((companyNode)-[*]-(root)) WHERE ID(companyNode) = {0} AND ID(root) = {1} RETURN length(p) AS height")
