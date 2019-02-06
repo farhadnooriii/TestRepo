@@ -5,11 +5,10 @@ import com.tradeshift.companystructure.domain.lables.RootNode;
 import com.tradeshift.companystructure.repositories.companynode.CompanyNodeRepository;
 import com.tradeshift.companystructure.repositories.companynode.CompanyNodeRepositoryImpl;
 import com.tradeshift.companystructure.repositories.seed.CompanyNodeSeeder;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.FixMethodOrder;
-import org.junit.Test;
+import com.tradeshift.companystructure.repositories.seed.CompanyNodeSeederImpl;
+import org.junit.*;
 import org.junit.runners.MethodSorters;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collection;
 import java.util.List;
@@ -18,13 +17,13 @@ public class CompanyNodeRepositoryIntegrationTest {
 
     private CompanyNodeRepository companyNodeRepository;
 
-    public CompanyNodeRepositoryIntegrationTest(){
-        companyNodeRepository = new CompanyNodeRepositoryImpl();
-    }
+    @Autowired
+    private CompanyNodeSeeder companyNodeSeeder;
 
-    @BeforeClass
-    public static void init() {
-       CompanyNodeSeeder.setupWithInitialData();
+    @Before
+    public void init() {
+        companyNodeRepository = new CompanyNodeRepositoryImpl();
+        companyNodeSeeder.setupWithInitialData();
     }
 
     @Test

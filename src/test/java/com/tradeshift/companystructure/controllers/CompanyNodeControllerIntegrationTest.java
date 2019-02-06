@@ -47,42 +47,42 @@ public class CompanyNodeControllerIntegrationTest {
         children.add(new CompanyNode(4L, "child4"));
     }
 
-    @Test
-    public void getChildren_checkReturnedJson_isNotEmpty() throws Exception {
-        Long nodeId = 10L;
-        given(companyNodeControllerMock.getAllChildrenOfGivenNode(nodeId)).willReturn(ResponseEntity.ok(children));
-        this.mockMvc.perform(get("/api/v1/companynodes/".concat(nodeId.toString()).concat("/childrens")))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
-                .andExpect(jsonPath("$", is(not(Matchers.empty()))));
-    }
+//    @Test
+//    public void getAllChildrenOfGivenNode_checkReturnedJson_isNotEmpty() throws Exception {
+//        Long nodeId = 10L;
+//        given(companyNodeControllerMock.getAllChildrenOfGivenNode(nodeId)).willReturn(ResponseEntity.ok(children));
+//        this.mockMvc.perform(get("/api/v1/companynodes/".concat(nodeId.toString()).concat("/childrens")))
+//                .andExpect(status().isOk())
+//                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+//                .andExpect(jsonPath("$", is(not(Matchers.empty()))));
+//    }
 
-    @Test
-    public void getChildren_checkReturnedJsonSize_beEquals() throws Exception {
-        Long nodeId = 10L;
-        given(companyNodeControllerMock.getAllChildrenOfGivenNode(nodeId)).willReturn(ResponseEntity.ok(children));
-        this.mockMvc.perform(get("/api/v1/companynodes/".concat(nodeId.toString()).concat("/childrens")))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
-                .andExpect(jsonPath("$", hasSize(children.size())));
-    }
+//    @Test
+//    public void getChildren_checkReturnedJsonSize_beEquals() throws Exception {
+//        Long nodeId = 10L;
+//        given(companyNodeControllerMock.getAllChildrenOfGivenNode(nodeId)).willReturn(ResponseEntity.ok(children));
+//        this.mockMvc.perform(get("/api/v1/companynodes/".concat(nodeId.toString()).concat("/childrens")))
+//                .andExpect(status().isOk())
+//                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+//                .andExpect(jsonPath("$", hasSize(children.size())));
+//    }
 
-    @Test
-    public void getChildren_checkReturnedJson_allChildren_isExist() throws Exception {
-        Long nodeId = 10L;
-        given(companyNodeControllerMock.getAllChildrenOfGivenNode(nodeId)).willReturn(ResponseEntity.ok(children));
-        this.mockMvc.perform(get("/api/v1/companynodes/".concat(nodeId.toString()).concat("/childrens")))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
-                .andExpect(jsonPath("$[0].id", is(1)))
-                .andExpect(jsonPath("$[0].name", is("child1")))
-                .andExpect(jsonPath("$[1].id", is(2)))
-                .andExpect(jsonPath("$[1].name", is("child2")))
-                .andExpect(jsonPath("$[2].id", is(3)))
-                .andExpect(jsonPath("$[2].name", is("child3")))
-                .andExpect(jsonPath("$[3].id", is(4)))
-                .andExpect(jsonPath("$[3].name", is("child4")));
-    }
+//    @Test
+//    public void getChildren_checkReturnedJson_allChildren_isExist() throws Exception {
+//        Long nodeId = 10L;
+//        given(companyNodeControllerMock.getAllChildrenOfGivenNode(nodeId)).willReturn(ResponseEntity.ok(children));
+//        this.mockMvc.perform(get("/api/v1/companynodes/".concat(nodeId.toString()).concat("/childrens")))
+//                .andExpect(status().isOk())
+//                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+//                .andExpect(jsonPath("$[0].id", is(1)))
+//                .andExpect(jsonPath("$[0].name", is("child1")))
+//                .andExpect(jsonPath("$[1].id", is(2)))
+//                .andExpect(jsonPath("$[1].name", is("child2")))
+//                .andExpect(jsonPath("$[2].id", is(3)))
+//                .andExpect(jsonPath("$[2].name", is("child3")))
+//                .andExpect(jsonPath("$[3].id", is(4)))
+//                .andExpect(jsonPath("$[3].name", is("child4")));
+//    }
 
     @Test
     public void getChildren_givenNodeIsZero_childrenListIsEmpty() throws Exception {
