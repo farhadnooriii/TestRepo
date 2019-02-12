@@ -62,7 +62,7 @@ public class CompanyNodeValidationTest {
     }
 
     @Test(expected = NodeNotFoundException.class)
-    public void testCheckNodeIsNotRootNode_whenNodeRepoFindRootNode_returnOptionalEmpty_NodeNotFoundException() throws Exception {
+    public void testCheckNodeIsNotRootNode_whenNodeRepoFindRootNode_returnOptionalEmpty_thenThrowNodeNotFoundException() throws Exception {
 
         Mockito.when(companyNodeRepositorySDNMock.findRootNode()).thenReturn(Optional.empty());
         companyNodeValidation.checkNodeIsNotRootNode(new CompanyNode(nodeId));
