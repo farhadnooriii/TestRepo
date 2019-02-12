@@ -103,7 +103,6 @@ public class CompanyNodeValidationTest {
 
         Mockito.when(companyNodeRepositorySDNMock.findById(nodeId, 0)).thenReturn(Optional.of(new CompanyNode(nodeId)));
         companyNodeValidation.checkNodeIsExist(new CompanyNode(nodeId));
-        Assert.assertTrue(true);
     }
 
     @Test(expected = NullPointerException.class)
